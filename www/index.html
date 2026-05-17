@@ -1,0 +1,2501 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WGRALGO Financial Calculators</title>
+  <meta name="description" content="Debt repayment, refinance, loan, amortization, ROI, budget, compound interest, lease vs own car, and rent vs own home calculators. Offline. No ads, accounts, or tracking." />
+
+  <style>
+    :root{
+      --gold:#d4af37;
+      --gold-soft:#f5e4b3;
+      --bg-black:#000000;
+      --bg:#050505;
+      --text:#fdfaf0;
+      --muted:rgba(253,250,240,.88);
+      --muted2:rgba(245,228,179,.86);
+      --border:rgba(212,175,55,.45);
+      --shadow:0 18px 40px rgba(0,0,0,.88);
+      --card:radial-gradient(circle at top, rgba(212,175,55,.16), rgba(5,5,5,.98));
+      --card2:linear-gradient(135deg, rgba(212,175,55,.22), rgba(8,6,2,.96));
+    }
+
+    body{
+      margin:0;
+      background:#000;
+      color:var(--text);
+      font-family:"Playfair Display", Georgia, "Times New Roman", serif;
+    }
+
+    /* ================= APP PURPOSE BANNER ================= */
+    .wgra-purpose{
+      background:#000;border-bottom:1px solid rgba(212,175,55,.35);
+      padding:22px 20px;text-align:center;
+    }
+    .wgra-purpose-title{
+      color:var(--gold-soft);font-weight:900;letter-spacing:.06em;
+      font-size:18px;margin:0 0 6px;
+    }
+    .wgra-purpose-sub{
+      color:var(--muted);font-size:13px;margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+
+    /* ================= APP FOOTER / ABOUT ================= */
+    .wgra-appfooter{
+      background:#000;border-top:1px solid rgba(212,175,55,.35);
+      padding:26px 20px;text-align:center;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .wgra-appfooter h2{
+      color:var(--gold-soft);font-size:15px;font-weight:900;letter-spacing:.06em;margin:0 0 10px;
+    }
+    .wgra-appfooter p{
+      color:var(--muted);font-size:12.5px;line-height:1.6;margin:0 auto 8px;max-width:640px;
+    }
+    .wgra-appfooter .wgra-ver{color:var(--gold-soft);font-weight:700}
+
+    /* ================= PAGE LAYOUT ================= */
+    .wgra-page{
+      background:radial-gradient(circle at top, #171717 0%, #050505 60%);
+      padding: 0 0 70px;
+    }
+    .wgra-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding: 40px 20px 0;
+    }
+
+    .wgra-breadcrumb{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+      color:rgba(245,228,180,.85);margin-bottom:10px;
+    }
+    .wgra-breadcrumb a{color:rgba(245,228,180,.85);text-decoration:none}
+    .wgra-breadcrumb span{opacity:.7}
+
+    .wgra-hero-kicker{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-soft);
+      margin-bottom:10px;
+    }
+    .wgra-hero-title{
+      font-size:32px;line-height:1.15;text-transform:uppercase;letter-spacing:.16em;margin:0 0 14px;
+    }
+    .wgra-hero-sub{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:15px;max-width:920px;color:rgba(253,250,240,.92);margin:0 0 18px;
+    }
+
+    .wgra-divider{
+      width:240px;height:4px;border-radius:999px;margin:18px 0 0;
+      background:linear-gradient(90deg,#b07a12,var(--gold-soft),var(--gold),var(--gold-soft),#b07a12);
+      background-size:260% 260%;
+      animation:wgraGoldFlow 7s linear infinite;
+    }
+    @keyframes wgraGoldFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+    .wgra-quick-disclaimer{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:14px;color:rgba(253,250,240,.9);
+      margin:18px 0 0;background:rgba(212,175,55,.12);
+      padding:10px 12px;border-left:3px solid var(--gold-soft);border-radius:6px;
+    }
+
+    /* TABLE OF CONTENTS LAYOUT (SIDE NAV STYLE) */
+    .wgra-cat-layout{display:flex;gap:24px;align-items:flex-start;margin-top:22px}
+    .wgra-toc{
+      flex:0 0 260px;max-width:260px;position:sticky;top:90px;
+      background:rgba(5,5,5,.96);border-radius:14px;border:1px solid rgba(212,175,55,.55);
+      box-shadow:0 10px 24px rgba(0,0,0,.85);padding:12px 14px 14px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px;
+    }
+    .wgra-toc-title{font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:var(--gold-soft);margin-bottom:8px}
+    .wgra-toc-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+    .wgra-toc-list a{text-decoration:none;color:rgba(253,250,240,.9);font-size:13px;line-height:1.4}
+    .wgra-toc-list a:hover{color:#fffbe7}
+
+    .wgra-cat-main{flex:1 1 auto;min-width:0}
+
+    .wgra-section{
+      border-top:1px solid rgba(212,175,55,.35);
+      padding-top:26px;
+      margin-top:24px;
+    }
+    .wgra-section-kicker{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,228,180,.9);
+      margin-bottom:6px;
+    }
+    .wgra-section-title{
+      font-size:18px;letter-spacing:.18em;text-transform:uppercase;margin:0 0 10px;color:var(--gold-soft);
+    }
+    .wgra-section-text{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:15px;color:rgba(253,250,240,.9);
+      margin:0 0 14px;
+    }
+
+    .wgra-card{
+      border-radius:18px;border:1px solid rgba(212,175,55,.45);
+      background:var(--card);box-shadow: var(--shadow);
+      padding:16px 16px 14px;overflow:hidden;
+    }
+
+    .wgra-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+      margin-top:12px;
+    }
+
+    .wgra-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .wgra-label{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:11px;text-transform:uppercase;letter-spacing:.22em;
+      color:var(--gold-soft);
+    }
+    .wgra-input, .wgra-select{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:14px;padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(245,228,179,.55);
+      background:rgba(5,5,5,.96);color:var(--text);outline:none;
+      transition: border-color .12s ease, box-shadow .12s ease;
+      min-width:0;
+    }
+    .wgra-input:focus, .wgra-select:focus{
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212,175,55,.18);
+    }
+
+    .wgra-help{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:12px;color:rgba(245,228,179,.82);line-height:1.35;
+    }
+
+    .wgra-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+
+    .wgra-btn{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      padding:10px 18px;border-radius:999px;
+      border:1px solid rgba(212,175,55,.9);
+      background:radial-gradient(circle at top, #fff3b8, #fbe79a 35%, #d4af37 85%);
+      color:#1b1303;font-weight:800;font-size:12px;
+      letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+      box-shadow:0 8px 20px rgba(0,0,0,.8);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .wgra-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.9);filter:brightness(1.05)}
+    .wgra-btn:disabled{opacity:.45;cursor:default;box-shadow:none;transform:none}
+
+    .wgra-btn-ghost{
+      background:transparent;color:var(--gold-soft);
+      border-color:rgba(245,228,179,.9);
+      box-shadow:0 6px 16px rgba(0,0,0,.6);
+    }
+    .wgra-btn-ghost:hover{background:rgba(212,175,55,.08)}
+
+    .wgra-result{
+      margin-top:12px;padding:12px 12px;border-radius:14px;
+      background: var(--card2);
+      border:1px solid rgba(212,175,55,.6);
+      box-shadow:0 10px 24px rgba(0,0,0,.75);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:rgba(253,250,240,.92);
+    }
+    .wgra-result h3{
+      margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.22em;color:var(--gold-soft);
+    }
+    .wgra-kv{display:grid;grid-template-columns: 1fr auto;gap:8px 12px;font-size:14px;line-height:1.4}
+    .wgra-kv .k{color:rgba(245,228,179,.9)}
+    .wgra-kv .v{color:var(--text);font-weight:800}
+
+    .wgra-warn{
+      margin-top:10px;padding:10px 12px;border-radius:12px;
+      background:rgba(255,92,92,.12);
+      border:1px solid rgba(255,92,92,.6);
+      color:rgba(253,250,240,.92);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:13px;display:none;
+    }
+
+    /* ================= FULL CUSTOM CHECKBOX (NO BLUE) ================= */
+    .wgra-checkbox{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:6px;
+      cursor:pointer;
+      user-select:none;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:13px;
+      color:rgba(253,250,240,.9);
+      line-height:1.35;
+    }
+    .wgra-checkbox input{
+      position:absolute;
+      opacity:0;
+      width:1px;height:1px;
+      pointer-events:none;
+    }
+    .wgra-checkbox .box{
+      width:18px;height:18px;
+      border-radius:5px;
+      border:1px solid rgba(245,228,179,.9);
+      background:rgba(5,5,5,.96);
+      box-shadow:0 8px 18px rgba(0,0,0,.55);
+      flex:0 0 auto;
+      position:relative;
+      margin-top:1px;
+    }
+    .wgra-checkbox:hover .box{
+      border-color:#fffbe7;
+      box-shadow:0 0 12px rgba(212,175,55,.55),0 10px 22px rgba(0,0,0,.65);
+    }
+    .wgra-checkbox input:focus-visible + .box{
+      outline:2px solid rgba(212,175,55,.65);
+      outline-offset:2px;
+    }
+    .wgra-checkbox input:checked + .box{
+      background:radial-gradient(circle at top, #fff3b8, #fbe79a 35%, #d4af37 85%);
+      border-color:rgba(245,228,179,.95);
+    }
+    .wgra-checkbox input:checked + .box::after{
+      content:"";
+      position:absolute;
+      left:5px;top:2px;
+      width:6px;height:10px;
+      border:2px solid #1b1303;
+      border-top:none;border-left:none;
+      transform:rotate(45deg);
+    }
+    .wgra-checkbox .text{display:block}
+
+    /* Table */
+    .wgra-table-wrap{
+      margin-top:12px;overflow:auto;border-radius:14px;
+      border:1px solid rgba(212,175,55,.35);
+      background:rgba(5,5,5,.92);
+    }
+    table{
+      width:100%;border-collapse:collapse;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size:13px;min-width: 920px;
+    }
+    th, td{padding:10px 10px;border-bottom:1px solid rgba(212,175,55,.18);white-space:nowrap}
+    th{
+      text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.2em;
+      color:var(--gold-soft);background:rgba(212,175,55,.08);
+      position:sticky;top:0;z-index:1;
+    }
+    td{color:rgba(253,250,240,.92)}
+    tbody tr:hover td{background:rgba(212,175,55,.06)}
+
+    details.wgra-advanced{
+      margin-top:12px;
+      border-radius:14px;
+      border:1px solid rgba(212,175,55,.45);
+      background:rgba(5,5,5,.92);
+      overflow:hidden;
+    }
+    details.wgra-advanced > summary{
+      cursor:pointer;
+      padding:10px 12px;
+      list-style:none;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-size:11px;
+      color:var(--gold-soft);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:rgba(212,175,55,.08);
+    }
+    details.wgra-advanced > summary::-webkit-details-marker{display:none}
+    .wgra-advanced-inner{padding:12px}
+
+    .wgra-disclaimer-box{
+      margin-top: 22px;padding: 16px 18px;border-radius: 14px;
+      border: 1px solid rgba(212,175,55,0.6);
+      background: linear-gradient(135deg, rgba(212,175,55,0.25), rgba(5,5,5,0.98));
+      box-shadow: 0 10px 24px rgba(0,0,0,0.75);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-size: 13px;
+    }
+    .wgra-disclaimer-title{
+      font-size: 13px;text-transform: uppercase;letter-spacing: .2em;
+      color: var(--gold-soft);margin-bottom: 6px;font-weight:900;
+    }
+    .wgra-disclaimer-box p{margin:0 0 8px;color:rgba(253,250,240,.9)}
+
+    /* Back to top button */
+    .wgra-back-to-top{
+      position: fixed;right: 20px;bottom: 24px;z-index: 9999;
+      border: 1px solid rgba(212,175,55,0.85);
+      background: radial-gradient(circle at top, #17110a 0%, #050505 80%);
+      color: var(--gold-soft);
+      border-radius: 999px;
+      padding: 8px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.9);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      opacity:0;
+      pointer-events:none;
+      transform:translateY(10px);
+    }
+    .wgra-back-to-top.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .wgra-back-to-top svg{
+      width: 16px;height: 16px;fill: none;stroke: var(--gold-soft);
+      stroke-width: 1.7;stroke-linecap: round;stroke-linejoin: round;
+    }
+    .wgra-back-to-top:hover{
+      transform: translateY(-1px);
+      border-color: #fffbe7;
+      box-shadow: 0 0 12px rgba(212,175,55,0.9), 0 0 30px rgba(212,175,55,0.55);
+    }
+    .wgra-back-to-top span{line-height:1}
+
+    /* ================= Native date input theming ================= */
+    input[type="date"].wgra-input{color-scheme: dark}
+    input[type="date"].wgra-input::-webkit-calendar-picker-indicator{
+      filter: invert(78%) sepia(38%) saturate(560%) hue-rotate(2deg) brightness(95%);
+      cursor: pointer;
+    }
+
+    @media (max-width: 960px){
+      .wgra-cat-layout{flex-direction:column}
+      .wgra-toc{position:static;max-width:none;width:100%}
+      .wgra-grid{grid-template-columns:1fr}
+      table{min-width: 760px;}
+    }
+    @media (max-width: 640px){
+      .wgra-hero-title{font-size:26px;letter-spacing:.12em}
+      .wgra-inner{padding:28px 14px 0}
+    }
+  </style>
+</head>
+
+<body id="top">
+  <!-- App purpose banner -->
+  <div class="wgra-purpose">
+    <p class="wgra-purpose-title">Free financial tools for everyday decisions.</p>
+    <p class="wgra-purpose-sub">No ads. No account. No tracking. No subscription.</p>
+  </div>
+
+  <div class="wgra-page">
+    <div class="wgra-inner">
+      <div class="wgra-breadcrumb">
+        <span>WGRALGO / Financial Calculators</span>
+      </div>
+
+      <div class="wgra-hero-kicker">Math &amp; Projections</div>
+      <h1 class="wgra-hero-title">Financial Calculators</h1>
+      <p class="wgra-hero-sub">
+        Built for clean inputs and transparent outcomes. Default results are “simple and readable,” with optional
+        <strong>Advanced (NPV)</strong> mode where it matters.
+      </p>
+      <div class="wgra-divider"></div>
+
+      <div class="wgra-quick-disclaimer">
+        <strong>Modeling standard used on this page:</strong>
+        Interest is modeled using <strong>daily compounding</strong> with a <strong>360-day year</strong> and <strong>fixed 30-day months</strong>.
+        Monthly payments are assumed to occur at the end of each 30-day period. Results are estimates and may not match your lender’s exact rules
+        (fees, escrow, payment timing, statement cycle length, rounding, local tax rules, etc.). This is education, not advice.
+      </div>
+
+      <div class="wgra-cat-layout">
+        <!-- TOC -->
+        <nav class="wgra-toc" aria-label="Financial Calculators Table of Contents">
+          <div class="wgra-toc-title">On This Page</div>
+          <ul class="wgra-toc-list">
+            <li><a href="#debt-repayment">Debt Repayment</a></li>
+            <li><a href="#mortgage-refi">Mortgage Refinance (P&amp;I Only)</a></li>
+            <li><a href="#simple-loan">Simple Loan</a></li>
+            <li><a href="#amortization">Amortization Schedule</a></li>
+            <li><a href="#roi">ROI</a></li>
+            <li><a href="#budget">Budget</a></li>
+            <li><a href="#compound">Compound Interest</a></li>
+            <li><a href="#lease-vs-own-car">Lease vs Own Car</a></li>
+            <li><a href="#rent-vs-own-home">Rent vs Own Home</a></li>
+            <li><a href="#important-disclaimer">Important Disclaimer</a></li>
+          </ul>
+        </nav>
+
+        <main class="wgra-cat-main">
+          <!-- 1) Debt Repayment -->
+          <section class="wgra-section" id="debt-repayment">
+            <div class="wgra-section-kicker">Debt &amp; Interest</div>
+            <h2 class="wgra-section-title">Debt Repayment Calculator</h2>
+            <p class="wgra-section-text">
+              Estimate payoff time (in months), total interest, and an approximate payoff month/year if you provide a start date.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="debtBalance">Current balance ($)</label>
+                  <input class="wgra-input" id="debtBalance" type="number" step="0.01" min="0" value="5000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="debtApr">APR (%)</label>
+                  <input class="wgra-input" id="debtApr" type="number" step="0.01" min="0" value="24.99" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="debtPayment">Monthly payment ($)</label>
+                  <input class="wgra-input" id="debtPayment" type="number" step="0.01" min="0" value="200" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="debtExtra">Extra monthly payment ($)</label>
+                  <input class="wgra-input" id="debtExtra" type="number" step="0.01" min="0" value="0" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="debtStartDate">Start date (optional)</label>
+                  <input class="wgra-input" id="debtStartDate" type="date" />
+                  <div class="wgra-help">Optional. Used to estimate an approximate payoff month/year.</div>
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="debtCapMonths">Safety cap (months)</label>
+                  <input class="wgra-input" id="debtCapMonths" type="number" step="1" min="12" value="2000" />
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="debtCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="debtResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="debtWarn"></div>
+
+              <div class="wgra-result" id="debtResult" style="display:none;">
+                <h3>Your snapshot</h3>
+                <div class="wgra-kv" id="debtKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2) Mortgage Refinance -->
+          <section class="wgra-section" id="mortgage-refi">
+            <div class="wgra-section-kicker">Home &amp; Refinancing</div>
+            <h2 class="wgra-section-title">Mortgage Refinance Calculator (P&amp;I Only)</h2>
+            <p class="wgra-section-text">
+              Compare principal &amp; interest payments and estimate breakeven (months). Taxes/insurance/HOA are intentionally excluded here.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="refiBalance">Current loan balance ($)</label>
+                  <input class="wgra-input" id="refiBalance" type="number" step="0.01" min="0" value="250000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="refiRateNow">Current APR (%)</label>
+                  <input class="wgra-input" id="refiRateNow" type="number" step="0.01" min="0" value="6.75" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="refiTermRemainYears">Remaining term (years)</label>
+                  <input class="wgra-input" id="refiTermRemainYears" type="number" step="1" min="1" value="25" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="refiRateNew">New APR (%)</label>
+                  <input class="wgra-input" id="refiRateNew" type="number" step="0.01" min="0" value="5.75" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="refiTermNewYears">New term (years)</label>
+                  <input class="wgra-input" id="refiTermNewYears" type="number" step="1" min="1" value="30" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="refiClosingCosts">Closing costs ($)</label>
+                  <input class="wgra-input" id="refiClosingCosts" type="number" step="0.01" min="0" value="6000" />
+
+                  <label class="wgra-checkbox" for="refiRollCosts" style="margin-top:8px;">
+                    <input id="refiRollCosts" type="checkbox" />
+                    <span class="box" aria-hidden="true"></span>
+                    <span class="text">Roll closing costs into the new loan balance</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="refiCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="refiResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="refiWarn"></div>
+
+              <div class="wgra-result" id="refiResult" style="display:none;">
+                <h3>Comparison</h3>
+                <div class="wgra-kv" id="refiKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3) Simple Loan -->
+          <section class="wgra-section" id="simple-loan">
+            <div class="wgra-section-kicker">Quick Math</div>
+            <h2 class="wgra-section-title">Simple Loan Calculator</h2>
+            <p class="wgra-section-text">
+              Enter principal, APR, and term to estimate monthly payment, total paid, total interest, and payoff time in months.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="loanPrincipal">Loan amount ($)</label>
+                  <input class="wgra-input" id="loanPrincipal" type="number" step="0.01" min="0" value="15000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="loanApr">APR (%)</label>
+                  <input class="wgra-input" id="loanApr" type="number" step="0.01" min="0" value="9.99" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="loanTermYears">Term (years)</label>
+                  <input class="wgra-input" id="loanTermYears" type="number" step="1" min="1" value="5" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="loanExtra">Extra monthly payment ($)</label>
+                  <input class="wgra-input" id="loanExtra" type="number" step="0.01" min="0" value="0" />
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="loanCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="loanResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="loanWarn"></div>
+
+              <div class="wgra-result" id="loanResult" style="display:none;">
+                <h3>Loan snapshot</h3>
+                <div class="wgra-kv" id="loanKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4) Amortization -->
+          <section class="wgra-section" id="amortization">
+            <div class="wgra-section-kicker">Full Schedule</div>
+            <h2 class="wgra-section-title">Amortization Schedule</h2>
+            <p class="wgra-section-text">
+              Generate a month-by-month schedule. Payoff time is shown in months.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="amPrincipal">Principal ($)</label>
+                  <input class="wgra-input" id="amPrincipal" type="number" step="0.01" min="0" value="300000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="amApr">APR (%)</label>
+                  <input class="wgra-input" id="amApr" type="number" step="0.01" min="0" value="6.25" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="amTermYears">Term (years)</label>
+                  <input class="wgra-input" id="amTermYears" type="number" step="1" min="1" value="30" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="amExtra">Extra monthly payment ($)</label>
+                  <input class="wgra-input" id="amExtra" type="number" step="0.01" min="0" value="0" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="amStartDate">Start date</label>
+                  <input class="wgra-input" id="amStartDate" type="date" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="amShowRows">Schedule rows to show</label>
+                  <select class="wgra-select" id="amShowRows">
+                    <option value="12">First 12 months</option>
+                    <option value="24">First 24 months</option>
+                    <option value="60">First 60 months</option>
+                    <option value="all" selected>Full schedule</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="amCalcBtn" type="button">Generate schedule</button>
+                <button class="wgra-btn wgra-btn-ghost" id="amResetBtn" type="button">Reset</button>
+                <button class="wgra-btn wgra-btn-ghost" id="amCsvBtn" type="button" disabled>Download CSV</button>
+              </div>
+
+              <div class="wgra-warn" id="amWarn"></div>
+
+              <div class="wgra-result" id="amResult" style="display:none;">
+                <h3>Amortization summary</h3>
+                <div class="wgra-kv" id="amKV"></div>
+              </div>
+
+              <div class="wgra-table-wrap" id="amTableWrap" style="display:none;">
+                <table aria-label="Amortization schedule">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>Payment</th>
+                      <th>Principal</th>
+                      <th>Interest</th>
+                      <th>Extra</th>
+                      <th>Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="amTbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5) ROI -->
+          <section class="wgra-section" id="roi">
+            <div class="wgra-section-kicker">Returns</div>
+            <h2 class="wgra-section-title">ROI Calculator</h2>
+            <p class="wgra-section-text">
+              Calculate simple ROI and (optionally) an annualized estimate based on a time window.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="roiInvested">Amount invested ($)</label>
+                  <input class="wgra-input" id="roiInvested" type="number" step="0.01" min="0" value="1000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="roiFinal">Final value ($)</label>
+                  <input class="wgra-input" id="roiFinal" type="number" step="0.01" min="0" value="1250" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="roiMonths">Time period (months)</label>
+                  <input class="wgra-input" id="roiMonths" type="number" step="1" min="0" value="12" />
+                  <div class="wgra-help">Set to 0 if you only want simple ROI.</div>
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="roiFees">Total fees ($)</label>
+                  <input class="wgra-input" id="roiFees" type="number" step="0.01" min="0" value="0" />
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="roiCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="roiResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="roiWarn"></div>
+
+              <div class="wgra-result" id="roiResult" style="display:none;">
+                <h3>ROI snapshot</h3>
+                <div class="wgra-kv" id="roiKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6) Budget -->
+          <section class="wgra-section" id="budget">
+            <div class="wgra-section-kicker">Money Management</div>
+            <h2 class="wgra-section-title">Budget Calculator</h2>
+            <p class="wgra-section-text">
+              Quick monthly budget summary: total expenses, surplus/deficit, savings rate, and goal check.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budIncome">Monthly income ($)</label>
+                  <input class="wgra-input" id="budIncome" type="number" step="0.01" min="0" value="4500" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budHousing">Housing ($)</label>
+                  <input class="wgra-input" id="budHousing" type="number" step="0.01" min="0" value="1600" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budTransport">Transportation ($)</label>
+                  <input class="wgra-input" id="budTransport" type="number" step="0.01" min="0" value="450" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budFood">Food ($)</label>
+                  <input class="wgra-input" id="budFood" type="number" step="0.01" min="0" value="550" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budDebt">Debt payments ($)</label>
+                  <input class="wgra-input" id="budDebt" type="number" step="0.01" min="0" value="300" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budUtilities">Utilities ($)</label>
+                  <input class="wgra-input" id="budUtilities" type="number" step="0.01" min="0" value="260" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budInsurance">Insurance ($)</label>
+                  <input class="wgra-input" id="budInsurance" type="number" step="0.01" min="0" value="250" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budEntertainment">Entertainment ($)</label>
+                  <input class="wgra-input" id="budEntertainment" type="number" step="0.01" min="0" value="150" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budOther">Other ($)</label>
+                  <input class="wgra-input" id="budOther" type="number" step="0.01" min="0" value="400" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="budSavingsGoal">Savings goal ($)</label>
+                  <input class="wgra-input" id="budSavingsGoal" type="number" step="0.01" min="0" value="500" />
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="budCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="budResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="budWarn"></div>
+
+              <div class="wgra-result" id="budResult" style="display:none;">
+                <h3>Budget snapshot</h3>
+                <div class="wgra-kv" id="budKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7) Compound Interest -->
+          <section class="wgra-section" id="compound">
+            <div class="wgra-section-kicker">Compounding</div>
+            <h2 class="wgra-section-title">Compound Interest Calculator</h2>
+            <p class="wgra-section-text">
+              Uses daily compounding (360-day year) with fixed 30-day months. Contributions apply monthly.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ciPrincipal">Starting amount ($)</label>
+                  <input class="wgra-input" id="ciPrincipal" type="number" step="0.01" min="0" value="5000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ciApr">Annual return (APR %)</label>
+                  <input class="wgra-input" id="ciApr" type="number" step="0.01" min="0" value="7" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ciMonthly">Monthly contribution ($)</label>
+                  <input class="wgra-input" id="ciMonthly" type="number" step="0.01" min="0" value="200" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ciMonths">Time (months)</label>
+                  <input class="wgra-input" id="ciMonths" type="number" step="1" min="0" value="120" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ciTiming">Contribution timing</label>
+                  <select class="wgra-select" id="ciTiming">
+                    <option value="end" selected>End of month (typical)</option>
+                    <option value="begin">Beginning of month</option>
+                  </select>
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ciCapMonths">Safety cap (months)</label>
+                  <input class="wgra-input" id="ciCapMonths" type="number" step="1" min="0" value="2000" />
+                </div>
+              </div>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="ciCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="ciResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="ciWarn"></div>
+
+              <div class="wgra-result" id="ciResult" style="display:none;">
+                <h3>Compound snapshot</h3>
+                <div class="wgra-kv" id="ciKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 8) Lease vs Own Car -->
+          <section class="wgra-section" id="lease-vs-own-car">
+            <div class="wgra-section-kicker">Vehicles</div>
+            <h2 class="wgra-section-title">Lease vs Own Car</h2>
+            <p class="wgra-section-text">
+              Compare net cost over a horizon in months. Ownership includes an end-of-horizon vehicle value so the result is not biased.
+              If your horizon exceeds the lease term, this model assumes repeating leases with the same terms (as approved).
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carHorizonMonths">Time horizon (months)</label>
+                  <input class="wgra-input" id="carHorizonMonths" type="number" step="1" min="1" value="36" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carMsrp">MSRP ($)</label>
+                  <input class="wgra-input" id="carMsrp" type="number" step="0.01" min="0" value="35000" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carPrice">Negotiated price / cap cost ($)</label>
+                  <input class="wgra-input" id="carPrice" type="number" step="0.01" min="0" value="33000" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carTaxRate">Sales tax rate (%)</label>
+                  <input class="wgra-input" id="carTaxRate" type="number" step="0.01" min="0" value="7.00" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carTradeIn">Trade-in value ($)</label>
+                  <input class="wgra-input" id="carTradeIn" type="number" step="0.01" min="0" value="0" />
+
+                  <label class="wgra-checkbox" for="carTradeReducesTax" style="margin-top:8px;">
+                    <input id="carTradeReducesTax" type="checkbox" checked />
+                    <span class="box" aria-hidden="true"></span>
+                    <span class="text">Trade-in reduces taxable amount (if applicable)</span>
+                  </label>
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carRebate">Cash rebate / incentives ($)</label>
+                  <input class="wgra-input" id="carRebate" type="number" step="0.01" min="0" value="0" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carFeesPurchase">Purchase fees (title/doc/registration) ($)</label>
+                  <input class="wgra-input" id="carFeesPurchase" type="number" step="0.01" min="0" value="600" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carFeesLeaseUpfront">Lease upfront fees (acquisition/registration) ($)</label>
+                  <input class="wgra-input" id="carFeesLeaseUpfront" type="number" step="0.01" min="0" value="900" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carFeesLeaseEnd">Lease end fees (disposition/wear) ($)</label>
+                  <input class="wgra-input" id="carFeesLeaseEnd" type="number" step="0.01" min="0" value="400" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="carTaxMode">Lease tax method</label>
+                  <select class="wgra-select" id="carTaxMode">
+                    <option value="monthly" selected>Tax on monthly payments (common)</option>
+                    <option value="upfront">Tax upfront on total payments (varies)</option>
+                  </select>
+                </div>
+              </div>
+
+              <details class="wgra-advanced" open>
+                <summary>
+                  Lease details (payment method)
+                  <span>▼</span>
+                </summary>
+                <div class="wgra-advanced-inner">
+                  <div class="wgra-grid" style="margin-top:0;">
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="leasePaymentMode">I know my lease payment?</label>
+                      <select class="wgra-select" id="leasePaymentMode">
+                        <option value="known" selected>Yes — I will enter the monthly payment</option>
+                        <option value="calc">No — calculate from residual + money factor</option>
+                      </select>
+                      <div class="wgra-help">If you choose “calculate,” we’ll estimate the payment from standard lease math.</div>
+                    </div>
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="leaseTerm">Lease term (months)</label>
+                      <input class="wgra-input" id="leaseTerm" type="number" step="1" min="1" value="36" />
+                      <div class="wgra-help">If horizon exceeds term, we assume repeating leases with the same terms.</div>
+                    </div>
+
+                    <div class="wgra-field" id="leaseMonthlyPaymentWrap">
+                      <label class="wgra-label" for="leaseMonthlyPayment">Monthly lease payment (before tax) ($)</label>
+                      <input class="wgra-input" id="leaseMonthlyPayment" type="number" step="0.01" min="0" value="429" />
+                    </div>
+
+                    <div class="wgra-field" id="leaseMoneyFactorWrap" style="display:none;">
+                      <label class="wgra-label" for="leaseRateMode">Lease rate input type</label>
+                      <select class="wgra-select" id="leaseRateMode">
+                        <option value="mf" selected>Money factor</option>
+                        <option value="apr">Lease APR (approx conversion)</option>
+                      </select>
+                      <div class="wgra-help">APR conversion uses APR ≈ money factor × 2400.</div>
+                    </div>
+
+                    <div class="wgra-field" id="leaseRateValWrap" style="display:none;">
+                      <label class="wgra-label" for="leaseRateVal">Money factor / Lease APR value</label>
+                      <input class="wgra-input" id="leaseRateVal" type="number" step="0.00001" min="0" value="0.00220" />
+                    </div>
+
+                    <div class="wgra-field" id="leaseResidualPctWrap" style="display:none;">
+                      <label class="wgra-label" for="leaseResidualPct">Residual value (% of MSRP)</label>
+                      <input class="wgra-input" id="leaseResidualPct" type="number" step="0.01" min="0" max="100" value="55" />
+                    </div>
+
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="leaseCapReduction">Cap cost reduction (lease down payment) ($)</label>
+                      <input class="wgra-input" id="leaseCapReduction" type="number" step="0.01" min="0" value="0" />
+
+                      <label class="wgra-checkbox" for="leaseFirstPaymentAtSigning" style="margin-top:8px;">
+                        <input id="leaseFirstPaymentAtSigning" type="checkbox" checked />
+                        <span class="box" aria-hidden="true"></span>
+                        <span class="text">Include first month payment at signing</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <details class="wgra-advanced">
+                <summary>
+                  Own details (cash / down + finance / full finance)
+                  <span>▼</span>
+                </summary>
+                <div class="wgra-advanced-inner">
+                  <div class="wgra-grid" style="margin-top:0;">
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="ownMode">Ownership mode</label>
+                      <select class="wgra-select" id="ownMode">
+                        <option value="cash">Pay fully in cash</option>
+                        <option value="down_finance" selected>Cash down + finance</option>
+                        <option value="finance">Fully finance (0 down)</option>
+                      </select>
+                    </div>
+
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="ownDown">Cash down payment ($)</label>
+                      <input class="wgra-input" id="ownDown" type="number" step="0.01" min="0" value="3000" />
+                      <div class="wgra-help">Ignored if “Pay fully in cash” is selected. Forced to $0 if “Fully finance.”</div>
+
+                      <label class="wgra-checkbox" for="ownRollTaxesFees" style="margin-top:8px;">
+                        <input id="ownRollTaxesFees" type="checkbox" checked />
+                        <span class="box" aria-hidden="true"></span>
+                        <span class="text">Roll taxes &amp; fees into the loan (if financing)</span>
+                      </label>
+                    </div>
+
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="ownLoanApr">Loan APR (%)</label>
+                      <input class="wgra-input" id="ownLoanApr" type="number" step="0.01" min="0" value="7.25" />
+                    </div>
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="ownLoanTerm">Loan term (months)</label>
+                      <input class="wgra-input" id="ownLoanTerm" type="number" step="1" min="1" value="60" />
+                    </div>
+
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="ownResale">Estimated car value at horizon ($)</label>
+                      <input class="wgra-input" id="ownResale" type="number" step="0.01" min="0" value="18000" />
+                      <div class="wgra-help">This is the “real worth” at the horizon (resale/private party estimate).</div>
+                    </div>
+
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="carOwnMonthlyOps">Owner monthly insurance + maintenance ($)</label>
+                      <input class="wgra-input" id="carOwnMonthlyOps" type="number" step="0.01" min="0" value="175" />
+                    </div>
+
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="carLeaseMonthlyOps">Lease monthly insurance + maintenance ($)</label>
+                      <input class="wgra-input" id="carLeaseMonthlyOps" type="number" step="0.01" min="0" value="160" />
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <details class="wgra-advanced">
+                <summary>
+                  Advanced: Show NPV (discounted comparison)
+                  <span>▼</span>
+                </summary>
+                <div class="wgra-advanced-inner">
+                  <div class="wgra-grid" style="margin-top:0;">
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="carUseNpv">Enable NPV outputs</label>
+                      <select class="wgra-select" id="carUseNpv">
+                        <option value="no" selected>No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                      <div class="wgra-help">NPV converts future payments to today’s dollars using a discount rate.</div>
+                    </div>
+                    <div class="wgra-field" id="carDiscountWrap" style="display:none;">
+                      <label class="wgra-label" for="carDiscountRate">Discount rate (%/year)</label>
+                      <input class="wgra-input" id="carDiscountRate" type="number" step="0.01" min="0" value="6.00" />
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="carCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="carResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="carWarn"></div>
+
+              <div class="wgra-result" id="carResult" style="display:none;">
+                <h3>Car comparison</h3>
+                <div class="wgra-kv" id="carKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 9) Rent vs Own Home -->
+          <section class="wgra-section" id="rent-vs-own-home">
+            <div class="wgra-section-kicker">Housing</div>
+            <h2 class="wgra-section-title">Rent vs Own Home</h2>
+            <p class="wgra-section-text">
+              Default view compares end-of-horizon outcomes. Owning includes mortgage payment + taxes + insurance + HOA + maintenance + utilities.
+              Renting includes rent + renters insurance + utilities (can be $0 if included). Advanced mode adds NPV.
+            </p>
+
+            <div class="wgra-card">
+              <div class="wgra-grid">
+                <div class="wgra-field">
+                  <label class="wgra-label" for="homeHorizonMonths">Time horizon (months)</label>
+                  <input class="wgra-input" id="homeHorizonMonths" type="number" step="1" min="12" value="84" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="homePrice">Home price ($)</label>
+                  <input class="wgra-input" id="homePrice" type="number" step="0.01" min="0" value="400000" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="downPct">Down payment (%)</label>
+                  <input class="wgra-input" id="downPct" type="number" step="0.01" min="0" max="100" value="10" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="buyClosing">Buyer closing costs ($)</label>
+                  <input class="wgra-input" id="buyClosing" type="number" step="0.01" min="0" value="8000" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="homeApr">Mortgage APR (%)</label>
+                  <input class="wgra-input" id="homeApr" type="number" step="0.01" min="0" value="6.25" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="homeTermYears">Mortgage term (years)</label>
+                  <input class="wgra-input" id="homeTermYears" type="number" step="1" min="1" value="30" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="taxPct">Property tax (%/year)</label>
+                  <input class="wgra-input" id="taxPct" type="number" step="0.01" min="0" value="1.20" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="insMo">Homeowners insurance ($/month)</label>
+                  <input class="wgra-input" id="insMo" type="number" step="0.01" min="0" value="170" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="hoaMo">HOA ($/month)</label>
+                  <input class="wgra-input" id="hoaMo" type="number" step="0.01" min="0" value="0" />
+                </div>
+                <div class="wgra-field">
+                  <label class="wgra-label" for="maintMode">Maintenance input type</label>
+                  <select class="wgra-select" id="maintMode">
+                    <option value="pct" selected>% of home value per year</option>
+                    <option value="mo">$ per month</option>
+                  </select>
+                </div>
+
+                <div class="wgra-field" id="maintPctWrap">
+                  <label class="wgra-label" for="maintPct">Maintenance (%/year)</label>
+                  <input class="wgra-input" id="maintPct" type="number" step="0.01" min="0" value="1.00" />
+                </div>
+                <div class="wgra-field" id="maintMoWrap" style="display:none;">
+                  <label class="wgra-label" for="maintMo">Maintenance ($/month)</label>
+                  <input class="wgra-input" id="maintMo" type="number" step="0.01" min="0" value="350" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="ownerUtils">Owner utilities ($/month) — must be ≥ $100</label>
+                  <input class="wgra-input" id="ownerUtils" type="number" step="0.01" min="0" value="180" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="rentMo">Rent ($/month)</label>
+                  <input class="wgra-input" id="rentMo" type="number" step="0.01" min="0" value="2600" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="rentIncPct">Rent increase (%/year)</label>
+                  <input class="wgra-input" id="rentIncPct" type="number" step="0.01" min="0" value="3.00" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="rentersIns">Renters insurance ($/month)</label>
+                  <input class="wgra-input" id="rentersIns" type="number" step="0.01" min="0" value="18" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="renterUtils">Renter utilities ($/month)</label>
+                  <input class="wgra-input" id="renterUtils" type="number" step="0.01" min="0" value="0" />
+                  <div class="wgra-help">Enter $0 if utilities are included in rent.</div>
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="deposit">Security deposit ($)</label>
+                  <input class="wgra-input" id="deposit" type="number" step="0.01" min="0" value="0" />
+
+                  <label class="wgra-checkbox" for="depositReturned" style="margin-top:8px;">
+                    <input id="depositReturned" type="checkbox" checked />
+                    <span class="box" aria-hidden="true"></span>
+                    <span class="text">Deposit returned at end</span>
+                  </label>
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="brokerFee">Broker fee (optional) ($)</label>
+                  <input class="wgra-input" id="brokerFee" type="number" step="0.01" min="0" value="0" />
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="appPct">Home appreciation (%/year)</label>
+                  <input class="wgra-input" id="appPct" type="number" step="0.01" min="0" value="3.00" />
+                </div>
+
+                <!-- SELLING COSTS INCLUDED (REQUIRED INPUT) -->
+                <div class="wgra-field">
+                  <label class="wgra-label" for="sellCostPct">Selling costs (% of home value)</label>
+                  <input class="wgra-input" id="sellCostPct" type="number" step="0.01" min="0" value="6.00" />
+                  <div class="wgra-help">Includes realtor + seller closing costs. This is required to avoid bias toward owning.</div>
+                </div>
+
+                <div class="wgra-field">
+                  <label class="wgra-label" for="invReturnPct">Investment return (%/year)</label>
+                  <input class="wgra-input" id="invReturnPct" type="number" step="0.01" min="0" value="6.00" />
+                  <div class="wgra-help">Renter invests the upfront “buying cash” + monthly differences.</div>
+                </div>
+              </div>
+
+              <details class="wgra-advanced">
+                <summary>
+                  Advanced: Show NPV (discounted comparison)
+                  <span>▼</span>
+                </summary>
+                <div class="wgra-advanced-inner">
+                  <div class="wgra-grid" style="margin-top:0;">
+                    <div class="wgra-field">
+                      <label class="wgra-label" for="homeUseNpv">Enable NPV outputs</label>
+                      <select class="wgra-select" id="homeUseNpv">
+                        <option value="no" selected>No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                    <div class="wgra-field" id="homeDiscountWrap" style="display:none;">
+                      <label class="wgra-label" for="homeDiscountRate">Discount rate (%/year)</label>
+                      <input class="wgra-input" id="homeDiscountRate" type="number" step="0.01" min="0" value="6.00" />
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <div class="wgra-row">
+                <button class="wgra-btn" id="homeCalcBtn" type="button">Calculate</button>
+                <button class="wgra-btn wgra-btn-ghost" id="homeResetBtn" type="button">Reset</button>
+              </div>
+
+              <div class="wgra-warn" id="homeWarn"></div>
+
+              <div class="wgra-result" id="homeResult" style="display:none;">
+                <h3>Rent vs own snapshot</h3>
+                <div class="wgra-kv" id="homeKV"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Disclaimer -->
+          <div class="wgra-disclaimer-box" id="important-disclaimer">
+            <div class="wgra-disclaimer-title">Important Disclaimer</div>
+            <p>
+              These calculators are provided for educational and informational purposes only. They do not constitute financial,
+              legal, tax, or investment advice, and they do not replace disclosures or official lender calculations.
+            </p>
+            <p>
+              <strong>Interest modeling standard:</strong> daily compounding, 360-day year, fixed 30-day months; payments assumed at period end.
+              Real products can differ (fees, day-count rules, escrow, statement cycles, taxes, rounding, etc.).
+            </p>
+            <p>Always verify results using official statements and qualified professionals.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- App About / Footer -->
+  <footer class="wgra-appfooter">
+    <h2>About</h2>
+    <p><span class="wgra-ver">WGRALGO Financial Calculators v1.0.0</span><br>
+       Created by WGRALGO / The Wealth Gap Resolution Algorithm™ Inc.<br>
+       Free and open-source under GPLv3.</p>
+    <p>These calculators are educational tools only. They are not financial, legal, tax,
+       investment, lending, or professional advice. Always verify important financial
+       decisions with qualified professionals or official sources.</p>
+    <p>Offline-first. No ads, no account, no analytics, no trackers, no subscription.
+       Your inputs stay on your device.</p>
+  </footer>
+
+  <!-- FLOATING BACK TO TOP BUTTON -->
+  <a href="#top" class="wgra-back-to-top" id="backToTopLink" aria-label="Back to Top">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <polyline points="6 15 12 9 18 15"></polyline>
+    </svg>
+    <span>Back to Top</span>
+  </a>
+
+  <script>
+    // ---------------- Utilities ----------------
+    const $ = (id) => document.getElementById(id);
+
+    function toNum(x){
+      const n = Number(x);
+      return Number.isFinite(n) ? n : 0;
+    }
+    function clamp(n, min, max){ return Math.min(max, Math.max(min, n)); }
+
+    function fmtMoney(n){
+      const v = Number(n);
+      if (!Number.isFinite(v)) return "—";
+      return v.toLocaleString(undefined, { style:"currency", currency:"USD" });
+    }
+    function fmtPct(n){
+      const v = Number(n);
+      if (!Number.isFinite(v)) return "—";
+      return v.toLocaleString(undefined, { maximumFractionDigits: 2 }) + "%";
+    }
+    function fmtInt(n){
+      const v = Number(n);
+      if (!Number.isFinite(v)) return "—";
+      return Math.round(v).toLocaleString();
+    }
+
+    function addMonths(dateObj, months){
+      const d = new Date(dateObj.getTime());
+      const day = d.getDate();
+      d.setMonth(d.getMonth() + months);
+      if (d.getDate() < day) d.setDate(0);
+      return d;
+    }
+    function fmtMonthYear(dateObj){
+      return dateObj.toLocaleString(undefined, { month:"short", year:"numeric" });
+    }
+
+    // ---------------- Interest standard: daily compounding, 360 day-count, fixed 30-day months ----------------
+    function dailyRate360(aprPct){ return (aprPct/100) / 360; }
+    function monthlyRateFromDaily360(aprPct){
+      const rd = dailyRate360(aprPct);
+      return Math.pow(1 + rd, 30) - 1; // fixed 30-day "month"
+    }
+    function paymentMonthly(principal, aprPct, nMonths){
+      const P = principal;
+      const r = monthlyRateFromDaily360(aprPct);
+      const n = nMonths;
+      if (n <= 0) return NaN;
+      if (Math.abs(r) < 1e-12) return P / n;
+      return P * r / (1 - Math.pow(1 + r, -n));
+    }
+    function pvFactor(discountAprPct, tMonths){
+      // Discount monthly rate using the SAME standard (daily/360 -> 30-day months)
+      const d = monthlyRateFromDaily360(discountAprPct);
+      return 1 / Math.pow(1 + d, tMonths);
+    }
+
+    function amortize({principal, aprPct, termMonths, extra=0, startDate=null, capMonths=8000}){
+      let balance = principal;
+      const rMonth = monthlyRateFromDaily360(aprPct);
+      const basePay = paymentMonthly(principal, aprPct, termMonths);
+      if (!Number.isFinite(basePay) || basePay <= 0) return { error:"Invalid payment inputs." };
+
+      const schedule = [];
+      let totalInterest = 0;
+      let totalPaid = 0;
+
+      const start = startDate ? new Date(startDate) : null;
+
+      for (let i=0; i<capMonths && balance > 0.005; i++){
+        const interest = (Math.abs(rMonth) < 1e-12) ? 0 : balance * rMonth;
+        let principalPaid = basePay - interest;
+
+        if (principalPaid <= 0){
+          return { error:"Payment is too low to cover interest (balance would not decrease)." };
+        }
+
+        let extraApplied = Math.max(0, extra);
+        let principalTotal = principalPaid + extraApplied;
+
+        if (principalTotal > balance){
+          principalTotal = balance;
+          extraApplied = Math.max(0, principalTotal - principalPaid);
+        }
+
+        balance -= principalTotal;
+        totalInterest += interest;
+        totalPaid += (interest + principalTotal);
+
+        schedule.push({
+          idx: i+1,
+          date: start ? addMonths(start, i) : null,
+          payment: interest + principalTotal,
+          principal: principalTotal,
+          interest,
+          extra: extraApplied,
+          balance: Math.max(0, balance)
+        });
+      }
+
+      const months = schedule.length;
+      const payoffDate = start ? addMonths(start, months) : null;
+
+      return { basePayment: basePay, schedule, months, totalInterest, totalPaid, payoffDate };
+    }
+
+    function payoffDebt({balance, aprPct, payment, extra=0, capMonths=2000, startDate=null}){
+      let bal = balance;
+      const rMonth = monthlyRateFromDaily360(aprPct);
+      let months = 0;
+      let totalInterest = 0;
+      let totalPaid = 0;
+
+      const pay = payment;
+      const xtra = Math.max(0, extra);
+
+      if (pay <= 0) return { error:"Monthly payment must be greater than $0." };
+
+      for (let i=0; i<capMonths && bal > 0.005; i++){
+        const interest = (Math.abs(rMonth) < 1e-12) ? 0 : bal * rMonth;
+        const principalPaid = pay - interest;
+
+        if (principalPaid <= 0){
+          return { error:"Your payment is too low to cover interest (balance would not decrease)." };
+        }
+
+        let extraApplied = xtra;
+        let principalTotal = principalPaid + extraApplied;
+
+        if (principalTotal > bal){
+          principalTotal = bal;
+          extraApplied = Math.max(0, principalTotal - principalPaid);
+        }
+
+        bal -= principalTotal;
+        totalInterest += interest;
+        totalPaid += (interest + principalTotal);
+        months++;
+      }
+
+      const payoffDate = startDate ? addMonths(new Date(startDate), months) : null;
+      return { months, totalInterest, totalPaid, payoffDate, remaining: Math.max(0, bal) };
+    }
+
+    // ---------------- Date input init (native <input type="date">) ----------------
+    function initDatePickers(){
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      $("amStartDate").value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    // ---------------- Back to top show/hide ----------------
+    function initBackToTop(){
+      const link = $("backToTopLink");
+      function onScroll(){
+        if (window.scrollY > 450) link.classList.add("show");
+        else link.classList.remove("show");
+      }
+      window.addEventListener("scroll", onScroll, { passive:true });
+      onScroll();
+    }
+
+    // ---------------- Calculator: Debt ----------------
+    function debtCalc(){
+      const balance = toNum($("debtBalance").value);
+      const apr = toNum($("debtApr").value);
+      const payment = toNum($("debtPayment").value);
+      const extra = toNum($("debtExtra").value);
+      const cap = Math.max(12, Math.round(toNum($("debtCapMonths").value)));
+      const startDate = ($("debtStartDate").value || "").trim() || null;
+
+      const warn = $("debtWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (balance <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter a balance greater than $0.";
+        $("debtResult").style.display = "none";
+        return;
+      }
+
+      const res = payoffDebt({ balance, aprPct: apr, payment, extra, capMonths: cap, startDate });
+
+      if (res.error){
+        warn.style.display = "block";
+        warn.textContent = res.error;
+        $("debtResult").style.display = "none";
+        return;
+      }
+
+      if (res.remaining > 0.01){
+        warn.style.display = "block";
+        warn.textContent = "Payoff did not complete within the safety cap. Increase payment/extra or raise the cap.";
+      }
+
+      $("debtKV").innerHTML = `
+        <div class="k">Starting balance</div><div class="v">${fmtMoney(balance)}</div>
+        <div class="k">APR (daily/360)</div><div class="v">${fmtPct(apr)}</div>
+        <div class="k">Monthly payment</div><div class="v">${fmtMoney(payment)}</div>
+        <div class="k">Extra monthly payment</div><div class="v">${fmtMoney(Math.max(0, extra))}</div>
+        <div class="k">Estimated payoff time</div><div class="v">${fmtInt(res.months)} month(s)</div>
+        <div class="k">Total interest paid</div><div class="v">${fmtMoney(res.totalInterest)}</div>
+        <div class="k">Total paid</div><div class="v">${fmtMoney(res.totalPaid)}</div>
+        <div class="k">Estimated payoff date</div><div class="v">${res.payoffDate ? fmtMonthYear(res.payoffDate) : "—"}</div>
+      `;
+      $("debtResult").style.display = "block";
+    }
+    function debtReset(){
+      $("debtBalance").value = 5000;
+      $("debtApr").value = 24.99;
+      $("debtPayment").value = 200;
+      $("debtExtra").value = 0;
+      $("debtStartDate").value = "";
+      $("debtCapMonths").value = 2000;
+      $("debtWarn").style.display = "none";
+      $("debtResult").style.display = "none";
+    }
+
+    // ---------------- Calculator: Refi ----------------
+    function refiCalc(){
+      const bal = toNum($("refiBalance").value);
+      const rateNow = toNum($("refiRateNow").value);
+      const termRemainYears = toNum($("refiTermRemainYears").value);
+      const rateNew = toNum($("refiRateNew").value);
+      const termNewYears = toNum($("refiTermNewYears").value);
+      const closing = Math.max(0, toNum($("refiClosingCosts").value));
+      const rollCosts = $("refiRollCosts").checked;
+
+      const warn = $("refiWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (bal <= 0 || termRemainYears <= 0 || termNewYears <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter valid balance and terms.";
+        $("refiResult").style.display = "none";
+        return;
+      }
+
+      const nNow = Math.round(termRemainYears * 12);
+      const nNew = Math.round(termNewYears * 12);
+
+      const payNow = paymentMonthly(bal, rateNow, nNow);
+      const newPrincipal = rollCosts ? (bal + closing) : bal;
+      const payNew = paymentMonthly(newPrincipal, rateNew, nNew);
+
+      const nowAm = amortize({ principal: bal, aprPct: rateNow, termMonths: nNow, extra: 0, capMonths: 9000 });
+      const newAm = amortize({ principal: newPrincipal, aprPct: rateNew, termMonths: nNew, extra: 0, capMonths: 9000 });
+
+      if (nowAm.error || newAm.error){
+        warn.style.display = "block";
+        warn.textContent = (nowAm.error || newAm.error);
+        $("refiResult").style.display = "none";
+        return;
+      }
+
+      const savings = payNow - payNew;
+
+      let breakeven = "—";
+      if (!rollCosts && closing > 0){
+        breakeven = (savings > 0.01) ? `${Math.ceil(closing / savings)} month(s)` : "No breakeven (payment not lower)";
+      } else if (rollCosts && closing > 0){
+        breakeven = "Rolled in (breakeven varies)";
+      }
+
+      if (savings < -0.01){
+        warn.style.display = "block";
+        warn.textContent = "Note: Estimated new P&I payment is higher with these inputs.";
+      }
+
+      $("refiKV").innerHTML = `
+        <div class="k">Current monthly P&amp;I</div><div class="v">${fmtMoney(payNow)}</div>
+        <div class="k">New monthly P&amp;I</div><div class="v">${fmtMoney(payNew)}</div>
+        <div class="k">Monthly difference</div><div class="v">${fmtMoney(savings)}</div>
+        <div class="k">Closing costs</div><div class="v">${fmtMoney(closing)}${rollCosts ? " (rolled in)" : " (upfront)"}</div>
+        <div class="k">Estimated breakeven</div><div class="v">${breakeven}</div>
+        <div class="k">Remaining interest (current)</div><div class="v">${fmtMoney(nowAm.totalInterest)}</div>
+        <div class="k">Total interest (new)</div><div class="v">${fmtMoney(newAm.totalInterest)}</div>
+      `;
+      $("refiResult").style.display = "block";
+    }
+    function refiReset(){
+      $("refiBalance").value = 250000;
+      $("refiRateNow").value = 6.75;
+      $("refiTermRemainYears").value = 25;
+      $("refiRateNew").value = 5.75;
+      $("refiTermNewYears").value = 30;
+      $("refiClosingCosts").value = 6000;
+      $("refiRollCosts").checked = false;
+      $("refiWarn").style.display = "none";
+      $("refiResult").style.display = "none";
+    }
+
+    // ---------------- Calculator: Simple Loan ----------------
+    function loanCalc(){
+      const P = toNum($("loanPrincipal").value);
+      const apr = toNum($("loanApr").value);
+      const years = toNum($("loanTermYears").value);
+      const extra = Math.max(0, toNum($("loanExtra").value));
+
+      const warn = $("loanWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (P <= 0 || years <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter a valid loan amount and term.";
+        $("loanResult").style.display = "none";
+        return;
+      }
+
+      const n = Math.round(years * 12);
+      const basePay = paymentMonthly(P, apr, n);
+
+      const am = amortize({ principal: P, aprPct: apr, termMonths: n, extra, capMonths: 9000 });
+      if (am.error){
+        warn.style.display = "block";
+        warn.textContent = am.error;
+        $("loanResult").style.display = "none";
+        return;
+      }
+
+      $("loanKV").innerHTML = `
+        <div class="k">Scheduled monthly payment</div><div class="v">${fmtMoney(basePay)}</div>
+        <div class="k">Extra monthly payment</div><div class="v">${fmtMoney(extra)}</div>
+        <div class="k">Payoff time</div><div class="v">${fmtInt(am.months)} month(s)</div>
+        <div class="k">Total interest paid</div><div class="v">${fmtMoney(am.totalInterest)}</div>
+        <div class="k">Total paid</div><div class="v">${fmtMoney(am.totalPaid)}</div>
+      `;
+      $("loanResult").style.display = "block";
+    }
+    function loanReset(){
+      $("loanPrincipal").value = 15000;
+      $("loanApr").value = 9.99;
+      $("loanTermYears").value = 5;
+      $("loanExtra").value = 0;
+      $("loanWarn").style.display = "none";
+      $("loanResult").style.display = "none";
+    }
+
+    // ---------------- Calculator: Amortization ----------------
+    let lastAmSchedule = null;
+
+    function amCalc(){
+      const P = toNum($("amPrincipal").value);
+      const apr = toNum($("amApr").value);
+      const years = toNum($("amTermYears").value);
+      const extra = Math.max(0, toNum($("amExtra").value));
+      const start = ($("amStartDate").value || "").trim() || null;
+      const showRows = $("amShowRows").value;
+
+      const warn = $("amWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (P <= 0 || years <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter a valid principal and term.";
+        $("amResult").style.display = "none";
+        $("amTableWrap").style.display = "none";
+        $("amCsvBtn").disabled = true;
+        return;
+      }
+
+      const n = Math.round(years * 12);
+      const res = amortize({ principal: P, aprPct: apr, termMonths: n, extra, startDate: start, capMonths: 9000 });
+
+      if (res.error){
+        warn.style.display = "block";
+        warn.textContent = res.error;
+        $("amResult").style.display = "none";
+        $("amTableWrap").style.display = "none";
+        $("amCsvBtn").disabled = true;
+        return;
+      }
+
+      lastAmSchedule = res.schedule;
+
+      $("amKV").innerHTML = `
+        <div class="k">Scheduled monthly payment</div><div class="v">${fmtMoney(res.basePayment)}</div>
+        <div class="k">Extra monthly payment</div><div class="v">${fmtMoney(extra)}</div>
+        <div class="k">Payoff time</div><div class="v">${fmtInt(res.months)} month(s)</div>
+        <div class="k">Total interest paid</div><div class="v">${fmtMoney(res.totalInterest)}</div>
+        <div class="k">Total paid</div><div class="v">${fmtMoney(res.totalPaid)}</div>
+        <div class="k">Estimated payoff date</div><div class="v">${res.payoffDate ? fmtMonthYear(res.payoffDate) : "—"}</div>
+      `;
+      $("amResult").style.display = "block";
+
+      const tbody = $("amTbody");
+      tbody.innerHTML = "";
+
+      let rowsToRender = res.schedule.length;
+      if (showRows !== "all") rowsToRender = Math.min(rowsToRender, Number(showRows));
+
+      for (let i=0; i<rowsToRender; i++){
+        const row = res.schedule[i];
+        const dateText = row.date ? fmtMonthYear(row.date) : `Month ${row.idx}`;
+        const principalOnly = (row.principal - row.extra);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.idx}</td>
+          <td>${dateText}</td>
+          <td>${fmtMoney(row.payment)}</td>
+          <td>${fmtMoney(principalOnly)}</td>
+          <td>${fmtMoney(row.interest)}</td>
+          <td>${fmtMoney(row.extra)}</td>
+          <td>${fmtMoney(row.balance)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      $("amTableWrap").style.display = "block";
+      $("amCsvBtn").disabled = false;
+    }
+
+    function amReset(){
+      $("amPrincipal").value = 300000;
+      $("amApr").value = 6.25;
+      $("amTermYears").value = 30;
+      $("amExtra").value = 0;
+      $("amShowRows").value = "all";
+      $("amWarn").style.display = "none";
+      $("amResult").style.display = "none";
+      $("amTableWrap").style.display = "none";
+      $("amCsvBtn").disabled = true;
+      lastAmSchedule = null;
+    }
+
+    function amDownloadCSV(){
+      if (!lastAmSchedule || !lastAmSchedule.length) return;
+
+      const header = ["#", "Date", "Payment", "Principal", "Interest", "Extra", "Balance"];
+      const lines = [header.join(",")];
+
+      lastAmSchedule.forEach(row => {
+        const dateText = row.date ? fmtMonthYear(row.date) : `Month ${row.idx}`;
+        const principalOnly = (row.principal - row.extra);
+
+        const vals = [
+          row.idx,
+          `"${dateText}"`,
+          row.payment.toFixed(2),
+          principalOnly.toFixed(2),
+          row.interest.toFixed(2),
+          row.extra.toFixed(2),
+          row.balance.toFixed(2)
+        ];
+        lines.push(vals.join(","));
+      });
+
+      const blob = new Blob([lines.join("\n")], { type:"text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "amortization_schedule_30day_daily360.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // ---------------- Calculator: ROI ----------------
+    function roiCalc(){
+      const invested = toNum($("roiInvested").value);
+      const finalVal = toNum($("roiFinal").value);
+      const months = Math.round(toNum($("roiMonths").value));
+      const fees = Math.max(0, toNum($("roiFees").value));
+
+      const warn = $("roiWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (invested <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Amount invested must be greater than $0.";
+        $("roiResult").style.display = "none";
+        return;
+      }
+
+      const netFinal = Math.max(0, finalVal - fees);
+      const profit = netFinal - invested;
+      const roi = (profit / invested) * 100;
+
+      let annualized = "—";
+      if (months > 0 && netFinal > 0){
+        const years = months / 12;
+        const a = (Math.pow(netFinal / invested, 1 / years) - 1) * 100;
+        annualized = fmtPct(a);
+      }
+
+      $("roiKV").innerHTML = `
+        <div class="k">Invested</div><div class="v">${fmtMoney(invested)}</div>
+        <div class="k">Final (after fees)</div><div class="v">${fmtMoney(netFinal)}</div>
+        <div class="k">Profit / Loss</div><div class="v">${fmtMoney(profit)}</div>
+        <div class="k">Simple ROI</div><div class="v">${fmtPct(roi)}</div>
+        <div class="k">Time period</div><div class="v">${months > 0 ? `${fmtInt(months)} month(s)` : "—"}</div>
+        <div class="k">Annualized estimate</div><div class="v">${annualized}</div>
+      `;
+      $("roiResult").style.display = "block";
+    }
+    function roiReset(){
+      $("roiInvested").value = 1000;
+      $("roiFinal").value = 1250;
+      $("roiMonths").value = 12;
+      $("roiFees").value = 0;
+      $("roiWarn").style.display = "none";
+      $("roiResult").style.display = "none";
+    }
+
+    // ---------------- Calculator: Budget ----------------
+    function budCalc(){
+      const income = toNum($("budIncome").value);
+      const housing = toNum($("budHousing").value);
+      const transport = toNum($("budTransport").value);
+      const food = toNum($("budFood").value);
+      const debt = toNum($("budDebt").value);
+      const utilities = toNum($("budUtilities").value);
+      const insurance = toNum($("budInsurance").value);
+      const entertainment = toNum($("budEntertainment").value);
+      const other = toNum($("budOther").value);
+      const goal = toNum($("budSavingsGoal").value);
+
+      const warn = $("budWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (income <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Monthly income must be greater than $0.";
+        $("budResult").style.display = "none";
+        return;
+      }
+
+      const expenses = housing + transport + food + debt + utilities + insurance + entertainment + other;
+      const net = income - expenses;
+      const savingsRate = (net / income) * 100;
+
+      let goalStatus = "—";
+      if (goal > 0) goalStatus = net >= goal ? "On track ✔" : "Short of goal";
+
+      $("budKV").innerHTML = `
+        <div class="k">Monthly income</div><div class="v">${fmtMoney(income)}</div>
+        <div class="k">Total expenses</div><div class="v">${fmtMoney(expenses)}</div>
+        <div class="k">Surplus / Deficit</div><div class="v">${fmtMoney(net)}</div>
+        <div class="k">Savings rate</div><div class="v">${fmtPct(savingsRate)}</div>
+        <div class="k">Savings goal</div><div class="v">${goal > 0 ? fmtMoney(goal) : "—"}</div>
+        <div class="k">Goal status</div><div class="v">${goalStatus}</div>
+      `;
+
+      if (net < 0){
+        warn.style.display = "block";
+        warn.textContent = "You are running a monthly deficit in this estimate. Consider reducing expenses or increasing income.";
+      }
+      $("budResult").style.display = "block";
+    }
+    function budReset(){
+      $("budIncome").value = 4500;
+      $("budHousing").value = 1600;
+      $("budTransport").value = 450;
+      $("budFood").value = 550;
+      $("budDebt").value = 300;
+      $("budUtilities").value = 260;
+      $("budInsurance").value = 250;
+      $("budEntertainment").value = 150;
+      $("budOther").value = 400;
+      $("budSavingsGoal").value = 500;
+      $("budWarn").style.display = "none";
+      $("budResult").style.display = "none";
+    }
+
+    // ---------------- Calculator: Compound Interest ----------------
+    function compoundCalc(){
+      const principal = Math.max(0, toNum($("ciPrincipal").value));
+      const apr = toNum($("ciApr").value);
+      const monthly = Math.max(0, toNum($("ciMonthly").value));
+      const months = Math.round(toNum($("ciMonths").value));
+      const cap = Math.max(0, Math.round(toNum($("ciCapMonths").value)));
+      const timing = $("ciTiming").value;
+
+      const warn = $("ciWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      if (months < 0){
+        warn.style.display = "block";
+        warn.textContent = "Months must be 0 or greater.";
+        $("ciResult").style.display = "none";
+        return;
+      }
+      if (cap > 0 && months > cap){
+        warn.style.display = "block";
+        warn.textContent = "Time exceeds safety cap. Lower months or raise the cap.";
+        $("ciResult").style.display = "none";
+        return;
+      }
+
+      const rMonth = monthlyRateFromDaily360(apr);
+      let bal = principal;
+      let totalContrib = 0;
+
+      for (let m=1; m<=months; m++){
+        if (timing === "begin"){
+          bal += monthly;
+          totalContrib += monthly;
+        }
+        bal *= (1 + rMonth);
+        if (timing === "end"){
+          bal += monthly;
+          totalContrib += monthly;
+        }
+      }
+
+      const totalPrincipalAndContrib = principal + totalContrib;
+      const growth = bal - totalPrincipalAndContrib;
+
+      $("ciKV").innerHTML = `
+        <div class="k">Starting amount</div><div class="v">${fmtMoney(principal)}</div>
+        <div class="k">Monthly contribution</div><div class="v">${fmtMoney(monthly)}</div>
+        <div class="k">Time</div><div class="v">${fmtInt(months)} month(s)</div>
+        <div class="k">Modeled annual return</div><div class="v">${fmtPct(apr)} (daily/360)</div>
+        <div class="k">Total contributions</div><div class="v">${fmtMoney(totalContrib)}</div>
+        <div class="k">Growth (estimate)</div><div class="v">${fmtMoney(growth)}</div>
+        <div class="k">Ending value</div><div class="v">${fmtMoney(bal)}</div>
+      `;
+      $("ciResult").style.display = "block";
+    }
+    function compoundReset(){
+      $("ciPrincipal").value = 5000;
+      $("ciApr").value = 7;
+      $("ciMonthly").value = 200;
+      $("ciMonths").value = 120;
+      $("ciTiming").value = "end";
+      $("ciCapMonths").value = 2000;
+      $("ciWarn").style.display = "none";
+      $("ciResult").style.display = "none";
+    }
+
+    // ---------------- Lease vs Own Car ----------------
+    function leaseEffectiveMoneyFactor(){
+      const mode = $("leaseRateMode").value; // mf or apr
+      const val = toNum($("leaseRateVal").value);
+      if (val <= 0) return 0;
+      return (mode === "apr") ? (val / 2400) : val;
+    }
+
+    function computeLeaseMonthlyPaymentBeforeTax(){
+      // Standard lease estimate:
+      // Depreciation = (CapCostAdj - Residual) / Term
+      // Finance = (CapCostAdj + Residual) * MoneyFactor
+      // Payment = Depreciation + Finance
+      const msrp = toNum($("carMsrp").value);
+      const capCost = toNum($("carPrice").value);
+      const tradeIn = Math.max(0, toNum($("carTradeIn").value));
+      const rebate = Math.max(0, toNum($("carRebate").value));
+      const feesUp = Math.max(0, toNum($("carFeesLeaseUpfront").value));
+      const capReduction = Math.max(0, toNum($("leaseCapReduction").value));
+      const term = Math.max(1, Math.round(toNum($("leaseTerm").value)));
+
+      const residPct = clamp(toNum($("leaseResidualPct").value), 0, 100);
+      const residual = msrp * (residPct/100);
+
+      // simple cap cost adjusted:
+      // (capCost + upfrontFees) - credits - capReduction
+      const capAdj = Math.max(0, (capCost + feesUp) - tradeIn - rebate - capReduction);
+
+      const mf = leaseEffectiveMoneyFactor();
+      const depreciation = (capAdj - residual) / term;
+      const finance = (capAdj + residual) * mf;
+
+      return Math.max(0, depreciation + finance);
+    }
+
+    function carCalc(){
+      const warn = $("carWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      const horizon = Math.max(1, Math.round(toNum($("carHorizonMonths").value)));
+      const msrp = toNum($("carMsrp").value);
+      const price = toNum($("carPrice").value);
+      const taxRate = Math.max(0, toNum($("carTaxRate").value)) / 100;
+
+      const tradeIn = Math.max(0, toNum($("carTradeIn").value));
+      const rebate = Math.max(0, toNum($("carRebate").value));
+      const tradeReducesTax = $("carTradeReducesTax").checked;
+
+      const feesPurchase = Math.max(0, toNum($("carFeesPurchase").value));
+      const feesLeaseUp = Math.max(0, toNum($("carFeesLeaseUpfront").value));
+      const feesLeaseEnd = Math.max(0, toNum($("carFeesLeaseEnd").value));
+
+      const leaseOps = Math.max(0, toNum($("carLeaseMonthlyOps").value));
+      const ownOps = Math.max(0, toNum($("carOwnMonthlyOps").value));
+
+      if (msrp <= 0 || price <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter MSRP and negotiated price (cap cost) greater than $0.";
+        $("carResult").style.display = "none";
+        return;
+      }
+
+      // Lease payment determination
+      const leaseMode = $("leasePaymentMode").value; // known or calc
+      const leaseTerm = Math.max(1, Math.round(toNum($("leaseTerm").value)));
+      let leaseMonthlyBeforeTax = Math.max(0, toNum($("leaseMonthlyPayment").value));
+
+      if (leaseMode === "calc"){
+        leaseMonthlyBeforeTax = computeLeaseMonthlyPaymentBeforeTax();
+        if (!Number.isFinite(leaseMonthlyBeforeTax) || leaseMonthlyBeforeTax <= 0){
+          warn.style.display = "block";
+          warn.textContent = "Lease payment calculation failed. Check term, money factor/APR, residual %, and inputs.";
+          $("carResult").style.display = "none";
+          return;
+        }
+      } else if (leaseMonthlyBeforeTax <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter a monthly lease payment greater than $0 (before tax).";
+        $("carResult").style.display = "none";
+        return;
+      }
+
+      const capReduction = Math.max(0, toNum($("leaseCapReduction").value));
+      const firstAtSigning = $("leaseFirstPaymentAtSigning").checked;
+      const leaseTaxMode = $("carTaxMode").value; // monthly or upfront
+
+      // Lease monthly with tax
+      const leaseMonthlyWithTax = leaseMonthlyBeforeTax * (1 + taxRate);
+      const leaseFirstPayment = firstAtSigning ? leaseMonthlyWithTax : 0;
+
+      // How many full lease cycles within horizon? (repeat lease = YES)
+      const cycles = Math.ceil(horizon / leaseTerm);
+
+      let leaseOutTotal = 0;
+      let leaseNpv = 0;
+      const useNpv = $("carUseNpv").value === "yes";
+      const disc = Math.max(0, toNum($("carDiscountRate").value));
+
+      // Lease cash flows
+      for (let c=0; c<cycles; c++){
+        const cycleStartMonth = c * leaseTerm;
+        if (cycleStartMonth >= horizon) break;
+
+        // upfront at signing (month 0 of that cycle)
+        let upfront = capReduction + feesLeaseUp + leaseFirstPayment;
+
+        // upfront tax approximation if chosen
+        if (leaseTaxMode === "upfront"){
+          upfront += (leaseMonthlyBeforeTax * leaseTerm) * taxRate;
+        }
+
+        leaseOutTotal += upfront;
+        if (useNpv) leaseNpv += upfront * pvFactor(disc, cycleStartMonth);
+
+        // monthly payments within this cycle, but not past horizon
+        const monthsThisCycle = Math.min(leaseTerm, horizon - cycleStartMonth);
+        for (let m=1; m<=monthsThisCycle; m++){
+          const t = cycleStartMonth + (m-1);
+          const pay = (leaseTaxMode === "upfront") ? leaseMonthlyBeforeTax : leaseMonthlyWithTax;
+          const flow = pay + leaseOps;
+          leaseOutTotal += flow;
+          if (useNpv) leaseNpv += flow * pvFactor(disc, t+1);
+        }
+
+        // end fee if cycle completes within horizon
+        const cycleEndMonth = cycleStartMonth + leaseTerm;
+        if (cycleEndMonth <= horizon){
+          leaseOutTotal += feesLeaseEnd;
+          if (useNpv) leaseNpv += feesLeaseEnd * pvFactor(disc, cycleEndMonth);
+        }
+      }
+
+      // Own side
+      const ownMode = $("ownMode").value; // cash, down_finance, finance
+      const rollTaxesFees = $("ownRollTaxesFees").checked;
+
+      let down = Math.max(0, toNum($("ownDown").value));
+      if (ownMode === "cash") down = 0;
+      if (ownMode === "finance") down = 0;
+
+      const loanApr = Math.max(0, toNum($("ownLoanApr").value));
+      const loanTerm = Math.max(1, Math.round(toNum($("ownLoanTerm").value)));
+      const resale = Math.max(0, toNum($("ownResale").value));
+
+      if (resale <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Enter an estimated car value at horizon (resale) greater than $0.";
+        $("carResult").style.display = "none";
+        return;
+      }
+
+      // Purchase tax base (simple)
+      const taxable = Math.max(0, price - (tradeReducesTax ? tradeIn : 0));
+      const purchaseTax = taxable * taxRate;
+
+      let upfrontOwn = 0;
+      let principal = 0;
+
+      if (ownMode === "cash"){
+        const totalPurchase = Math.max(0, price + purchaseTax + feesPurchase - tradeIn - rebate);
+        upfrontOwn = totalPurchase;
+        principal = 0;
+      } else {
+        if (rollTaxesFees){
+          principal = Math.max(0, price + purchaseTax + feesPurchase - tradeIn - rebate - down);
+          upfrontOwn = down;
+        } else {
+          principal = Math.max(0, price - tradeIn - rebate - down);
+          upfrontOwn = down + purchaseTax + feesPurchase;
+        }
+      }
+
+      // Amortize loan for horizon months
+      let ownOutTotal = 0;
+      let ownNpv = 0;
+
+      ownOutTotal += upfrontOwn;
+      if (useNpv) ownNpv += upfrontOwn * pvFactor(disc, 0);
+
+      let bal = principal;
+      let ownMonthlyPay = 0;
+
+      if (principal > 0){
+        ownMonthlyPay = paymentMonthly(principal, loanApr, loanTerm);
+        const rMonth = monthlyRateFromDaily360(loanApr);
+
+        for (let m=1; m<=horizon; m++){
+          let pay = 0;
+          if (bal > 0.005){
+            const interest = (Math.abs(rMonth) < 1e-12) ? 0 : bal * rMonth;
+            let principalPaid = ownMonthlyPay - interest;
+            if (principalPaid < 0){
+              warn.style.display = "block";
+              warn.textContent = "Loan payment is too low to cover interest in this model. Check inputs.";
+              $("carResult").style.display = "none";
+              return;
+            }
+            if (principalPaid > bal) principalPaid = bal;
+            bal -= principalPaid;
+            pay = interest + principalPaid;
+          }
+          const flow = pay + ownOps;
+          ownOutTotal += flow;
+          if (useNpv) ownNpv += flow * pvFactor(disc, m);
+        }
+      } else {
+        for (let m=1; m<=horizon; m++){
+          ownOutTotal += ownOps;
+          if (useNpv) ownNpv += ownOps * pvFactor(disc, m);
+        }
+      }
+
+      const endEquity = resale - bal;
+      const ownNetCost = ownOutTotal - endEquity;
+      const leaseNetCost = leaseOutTotal;
+
+      const winnerSimple = (ownNetCost < leaseNetCost) ? "Own" : (leaseNetCost < ownNetCost ? "Lease" : "Tie");
+      const diffSimple = Math.abs(ownNetCost - leaseNetCost);
+
+      let npvLine = "";
+      if (useNpv){
+        const ownNpvNet = ownNpv - (endEquity * pvFactor(disc, horizon));
+        const leaseNpvNet = leaseNpv;
+
+        const winnerNpv = (ownNpvNet < leaseNpvNet) ? "Own" : (leaseNpvNet < ownNpvNet ? "Lease" : "Tie");
+        const diffNpv = Math.abs(ownNpvNet - leaseNpvNet);
+
+        npvLine = `
+          <div class="k">NPV net cost (Own)</div><div class="v">${fmtMoney(ownNpvNet)}</div>
+          <div class="k">NPV net cost (Lease)</div><div class="v">${fmtMoney(leaseNpvNet)}</div>
+          <div class="k">NPV winner</div><div class="v">${winnerNpv}</div>
+          <div class="k">NPV difference</div><div class="v">${fmtMoney(diffNpv)}</div>
+        `;
+      }
+
+      $("carKV").innerHTML = `
+        <div class="k">Horizon</div><div class="v">${fmtInt(horizon)} month(s)</div>
+        <div class="k">Lease monthly payment used (before tax)</div><div class="v">${fmtMoney(leaseMonthlyBeforeTax)}</div>
+        <div class="k">Total out-of-pocket (Lease)</div><div class="v">${fmtMoney(leaseOutTotal)}</div>
+        <div class="k">Total out-of-pocket (Own)</div><div class="v">${fmtMoney(ownOutTotal)}</div>
+        <div class="k">End vehicle equity (resale − remaining loan)</div><div class="v">${fmtMoney(endEquity)}</div>
+        <div class="k">Net cost (Own)</div><div class="v">${fmtMoney(ownNetCost)}</div>
+        <div class="k">Net cost (Lease)</div><div class="v">${fmtMoney(leaseNetCost)}</div>
+        <div class="k">Simple winner</div><div class="v">${winnerSimple}</div>
+        <div class="k">Simple difference</div><div class="v">${fmtMoney(diffSimple)}</div>
+        ${npvLine}
+      `;
+
+      $("carResult").style.display = "block";
+    }
+
+    function carReset(){
+      $("carHorizonMonths").value = 36;
+      $("carMsrp").value = 35000;
+      $("carPrice").value = 33000;
+      $("carTaxRate").value = 7.00;
+      $("carTradeIn").value = 0;
+      $("carTradeReducesTax").checked = true;
+      $("carRebate").value = 0;
+      $("carFeesPurchase").value = 600;
+      $("carFeesLeaseUpfront").value = 900;
+      $("carFeesLeaseEnd").value = 400;
+      $("carTaxMode").value = "monthly";
+
+      $("leasePaymentMode").value = "known";
+      $("leaseTerm").value = 36;
+      $("leaseMonthlyPayment").value = 429;
+      $("leaseRateMode").value = "mf";
+      $("leaseRateVal").value = 0.00220;
+      $("leaseResidualPct").value = 55;
+      $("leaseCapReduction").value = 0;
+      $("leaseFirstPaymentAtSigning").checked = true;
+
+      $("ownMode").value = "down_finance";
+      $("ownDown").value = 3000;
+      $("ownRollTaxesFees").checked = true;
+      $("ownLoanApr").value = 7.25;
+      $("ownLoanTerm").value = 60;
+      $("ownResale").value = 18000;
+      $("carOwnMonthlyOps").value = 175;
+      $("carLeaseMonthlyOps").value = 160;
+
+      $("carUseNpv").value = "no";
+      $("carDiscountRate").value = 6.00;
+      $("carDiscountWrap").style.display = "none";
+
+      $("carWarn").style.display = "none";
+      $("carResult").style.display = "none";
+
+      updateLeaseModeUI();
+      updateCarNpvUI();
+      updateOwnModeUI();
+    }
+
+    // ---------------- Rent vs Own Home ----------------
+    function annualToMonthlyGrowth(annualPct){
+      const a = annualPct / 100;
+      return (a <= -1) ? -1 : (Math.pow(1 + a, 1/12) - 1);
+    }
+
+    function homeCalc(){
+      const warn = $("homeWarn");
+      warn.style.display = "none"; warn.textContent = "";
+
+      const horizon = Math.max(12, Math.round(toNum($("homeHorizonMonths").value)));
+      const price = Math.max(0, toNum($("homePrice").value));
+      const downPct = clamp(toNum($("downPct").value), 0, 100);
+      const buyClosing = Math.max(0, toNum($("buyClosing").value));
+
+      const apr = Math.max(0, toNum($("homeApr").value));
+      const termYears = Math.max(1, Math.round(toNum($("homeTermYears").value)));
+      const termMonths = termYears * 12;
+
+      const taxPct = Math.max(0, toNum($("taxPct").value));
+      const insMo = Math.max(0, toNum($("insMo").value));
+      const hoaMo = Math.max(0, toNum($("hoaMo").value));
+
+      const maintMode = $("maintMode").value;
+      const maintPct = Math.max(0, toNum($("maintPct").value));
+      const maintMo = Math.max(0, toNum($("maintMo").value));
+
+      const ownerUtils = Math.max(0, toNum($("ownerUtils").value));
+      if (ownerUtils <= 99){
+        warn.style.display = "block";
+        warn.textContent = "Owner utilities must be at least $100/month.";
+        $("homeResult").style.display = "none";
+        return;
+      }
+
+      const rent0 = Math.max(0, toNum($("rentMo").value));
+      const rentIncPct = Math.max(0, toNum($("rentIncPct").value));
+      const rentersIns = Math.max(0, toNum($("rentersIns").value));
+      const renterUtils = Math.max(0, toNum($("renterUtils").value));
+
+      const deposit = Math.max(0, toNum($("deposit").value));
+      const depositReturned = $("depositReturned").checked;
+      const brokerFee = Math.max(0, toNum($("brokerFee").value));
+
+      const appPct = Math.max(0, toNum($("appPct").value));
+      const sellCostPct = clamp(toNum($("sellCostPct").value), 0, 30);
+      const invReturn = Math.max(0, toNum($("invReturnPct").value));
+
+      if (price <= 0){
+        warn.style.display = "block";
+        warn.textContent = "Home price must be greater than $0.";
+        $("homeResult").style.display = "none";
+        return;
+      }
+
+      const down = price * (downPct/100);
+      const loan = Math.max(0, price - down);
+
+      const mortPay = (loan > 0) ? paymentMonthly(loan, apr, termMonths) : 0;
+
+      const rMonthMort = monthlyRateFromDaily360(apr);
+
+      const appMonthly = annualToMonthlyGrowth(appPct);
+      const rentMonthlyInc = annualToMonthlyGrowth(rentIncPct);
+
+      // Investment growth for renter uses daily/360 standard
+      const invMonth = monthlyRateFromDaily360(invReturn);
+
+      let homeValue = price;
+      let balance = loan;
+
+      // Renter starts with "not buying" cash available:
+      let investBal = Math.max(0, (down + buyClosing) - deposit - brokerFee);
+
+      // Totals (simple transparency)
+      let totalOwnerOut = down + buyClosing;
+      let totalRentOut = deposit + brokerFee;
+
+      // NPV tracking
+      const useNpv = $("homeUseNpv").value === "yes";
+      const disc = Math.max(0, toNum($("homeDiscountRate").value));
+      let npvOwn = 0;
+      let npvRent = 0;
+
+      // month 0 outflows
+      if (useNpv){
+        npvOwn += (down + buyClosing) * pvFactor(disc, 0);
+        npvRent += (deposit + brokerFee) * pvFactor(disc, 0);
+      }
+
+      let rent = rent0;
+
+      for (let m=1; m<=horizon; m++){
+        let mortOut = 0;
+
+        if (balance > 0.005 && mortPay > 0){
+          const interest = (Math.abs(rMonthMort) < 1e-12) ? 0 : balance * rMonthMort;
+          let principalPaid = mortPay - interest;
+
+          if (principalPaid < 0){
+            warn.style.display = "block";
+            warn.textContent = "Mortgage payment is too low to cover interest in this model. Check inputs.";
+            $("homeResult").style.display = "none";
+            return;
+          }
+
+          if (principalPaid > balance) principalPaid = balance;
+          balance -= principalPaid;
+
+          mortOut = interest + principalPaid;
+        }
+
+        // Home appreciation
+        homeValue *= (1 + appMonthly);
+
+        // Property tax and maintenance
+        const taxMo = (taxPct/100) * homeValue / 12;
+        const maintComputed = (maintMode === "pct") ? ((maintPct/100) * homeValue / 12) : maintMo;
+
+        const ownerMonthlyOut = mortOut + taxMo + insMo + hoaMo + maintComputed + ownerUtils;
+
+        // Renter monthly costs
+        const rentOut = rent + rentersIns + renterUtils;
+        rent *= (1 + rentMonthlyInc);
+
+        totalOwnerOut += ownerMonthlyOut;
+        totalRentOut += rentOut;
+
+        if (useNpv){
+          npvOwn += ownerMonthlyOut * pvFactor(disc, m);
+          npvRent += rentOut * pvFactor(disc, m);
+        }
+
+        // Invest the difference
+        const diff = ownerMonthlyOut - rentOut;
+
+        investBal *= (1 + invMonth);
+        investBal += diff;
+        if (investBal < 0) investBal = 0;
+      }
+
+      // Deposit return at end
+      if (depositReturned && deposit > 0){
+        investBal += deposit;
+        if (useNpv) npvRent -= deposit * pvFactor(disc, horizon);
+      }
+
+      // Owner equity after selling (SELLING COSTS INCLUDED)
+      const sellCosts = (sellCostPct/100) * homeValue;
+      const ownerEquityAfterSell = homeValue - sellCosts - balance;
+
+      const netOwner = ownerEquityAfterSell;
+      const netRenter = investBal;
+
+      const winner = netOwner > netRenter ? "Own" : (netRenter > netOwner ? "Rent" : "Tie");
+      const delta = Math.abs(netOwner - netRenter);
+
+      let npvBlock = "";
+      if (useNpv){
+        const npvOwnNet = npvOwn - (netOwner * pvFactor(disc, horizon));
+        const npvRentNet = npvRent - (netRenter * pvFactor(disc, horizon));
+
+        const npvWinner = (npvOwnNet < npvRentNet) ? "Own" : (npvRentNet < npvOwnNet ? "Rent" : "Tie");
+        const npvDiff = Math.abs(npvOwnNet - npvRentNet);
+
+        npvBlock = `
+          <div class="k">NPV net cost (Own)</div><div class="v">${fmtMoney(npvOwnNet)}</div>
+          <div class="k">NPV net cost (Rent)</div><div class="v">${fmtMoney(npvRentNet)}</div>
+          <div class="k">NPV winner</div><div class="v">${npvWinner}</div>
+          <div class="k">NPV difference</div><div class="v">${fmtMoney(npvDiff)}</div>
+        `;
+      }
+
+      $("homeKV").innerHTML = `
+        <div class="k">Horizon</div><div class="v">${fmtInt(horizon)} month(s)</div>
+        <div class="k">Mortgage payment (computed)</div><div class="v">${fmtMoney(mortPay)}</div>
+        <div class="k">Estimated home value (end)</div><div class="v">${fmtMoney(homeValue)}</div>
+        <div class="k">Estimated remaining mortgage balance</div><div class="v">${fmtMoney(balance)}</div>
+        <div class="k">Selling costs (end estimate)</div><div class="v">${fmtMoney(sellCosts)}</div>
+        <div class="k">Estimated equity after selling costs</div><div class="v">${fmtMoney(netOwner)}</div>
+        <div class="k">Renter invested account (end)</div><div class="v">${fmtMoney(netRenter)}</div>
+        <div class="k">Simple winner (higher net worth)</div><div class="v">${winner}</div>
+        <div class="k">Difference</div><div class="v">${fmtMoney(delta)}</div>
+        <div class="k">Total owner cash out (for transparency)</div><div class="v">${fmtMoney(totalOwnerOut)}</div>
+        <div class="k">Total renter cash out (for transparency)</div><div class="v">${fmtMoney(totalRentOut)}</div>
+        ${npvBlock}
+      `;
+
+      $("homeResult").style.display = "block";
+    }
+
+    function homeReset(){
+      $("homeHorizonMonths").value = 84;
+      $("homePrice").value = 400000;
+      $("downPct").value = 10;
+      $("buyClosing").value = 8000;
+      $("homeApr").value = 6.25;
+      $("homeTermYears").value = 30;
+
+      $("taxPct").value = 1.20;
+      $("insMo").value = 170;
+      $("hoaMo").value = 0;
+
+      $("maintMode").value = "pct";
+      $("maintPct").value = 1.00;
+      $("maintMo").value = 350;
+      $("maintPctWrap").style.display = "";
+      $("maintMoWrap").style.display = "none";
+
+      $("ownerUtils").value = 180;
+
+      $("rentMo").value = 2600;
+      $("rentIncPct").value = 3.00;
+      $("rentersIns").value = 18;
+      $("renterUtils").value = 0;
+
+      $("deposit").value = 0;
+      $("depositReturned").checked = true;
+      $("brokerFee").value = 0;
+
+      $("appPct").value = 3.00;
+      $("sellCostPct").value = 6.00;
+      $("invReturnPct").value = 6.00;
+
+      $("homeUseNpv").value = "no";
+      $("homeDiscountRate").value = 6.00;
+      $("homeDiscountWrap").style.display = "none";
+
+      $("homeWarn").style.display = "none";
+      $("homeResult").style.display = "none";
+    }
+
+    // ---------------- UI toggles ----------------
+    function updateLeaseModeUI(){
+      const mode = $("leasePaymentMode").value;
+      const showCalc = (mode === "calc");
+
+      $("leaseMonthlyPaymentWrap").style.display = showCalc ? "none" : "";
+      $("leaseMoneyFactorWrap").style.display = showCalc ? "" : "none";
+      $("leaseRateValWrap").style.display = showCalc ? "" : "none";
+      $("leaseResidualPctWrap").style.display = showCalc ? "" : "none";
+    }
+
+    function updateCarNpvUI(){
+      const use = $("carUseNpv").value === "yes";
+      $("carDiscountWrap").style.display = use ? "" : "none";
+    }
+
+    function updateHomeNpvUI(){
+      const use = $("homeUseNpv").value === "yes";
+      $("homeDiscountWrap").style.display = use ? "" : "none";
+    }
+
+    function updateMaintModeUI(){
+      const mode = $("maintMode").value;
+      $("maintPctWrap").style.display = (mode === "pct") ? "" : "none";
+      $("maintMoWrap").style.display = (mode === "mo") ? "" : "none";
+    }
+
+    function updateOwnModeUI(){
+      const mode = $("ownMode").value;
+      if (mode === "cash"){
+        $("ownDown").disabled = true;
+        $("ownLoanApr").disabled = true;
+        $("ownLoanTerm").disabled = true;
+        $("ownRollTaxesFees").disabled = true;
+      } else if (mode === "finance"){
+        $("ownDown").disabled = true;
+        $("ownDown").value = 0;
+        $("ownLoanApr").disabled = false;
+        $("ownLoanTerm").disabled = false;
+        $("ownRollTaxesFees").disabled = false;
+      } else {
+        $("ownDown").disabled = false;
+        $("ownLoanApr").disabled = false;
+        $("ownLoanTerm").disabled = false;
+        $("ownRollTaxesFees").disabled = false;
+      }
+    }
+
+    // ---------------- Wire up ----------------
+    function wire(){
+      $("debtCalcBtn").addEventListener("click", debtCalc);
+      $("debtResetBtn").addEventListener("click", debtReset);
+
+      $("refiCalcBtn").addEventListener("click", refiCalc);
+      $("refiResetBtn").addEventListener("click", refiReset);
+
+      $("loanCalcBtn").addEventListener("click", loanCalc);
+      $("loanResetBtn").addEventListener("click", loanReset);
+
+      $("amCalcBtn").addEventListener("click", amCalc);
+      $("amResetBtn").addEventListener("click", amReset);
+      $("amCsvBtn").addEventListener("click", amDownloadCSV);
+
+      $("roiCalcBtn").addEventListener("click", roiCalc);
+      $("roiResetBtn").addEventListener("click", roiReset);
+
+      $("budCalcBtn").addEventListener("click", budCalc);
+      $("budResetBtn").addEventListener("click", budReset);
+
+      $("ciCalcBtn").addEventListener("click", compoundCalc);
+      $("ciResetBtn").addEventListener("click", compoundReset);
+
+      $("carCalcBtn").addEventListener("click", carCalc);
+      $("carResetBtn").addEventListener("click", carReset);
+      $("leasePaymentMode").addEventListener("change", updateLeaseModeUI);
+      $("carUseNpv").addEventListener("change", updateCarNpvUI);
+      $("ownMode").addEventListener("change", updateOwnModeUI);
+
+      $("homeCalcBtn").addEventListener("click", homeCalc);
+      $("homeResetBtn").addEventListener("click", homeReset);
+      $("homeUseNpv").addEventListener("change", updateHomeNpvUI);
+      $("maintMode").addEventListener("change", updateMaintModeUI);
+    }
+
+    // Init
+    initDatePickers();
+    initBackToTop();
+    wire();
+
+    // Initial UI state
+    updateLeaseModeUI();
+    updateCarNpvUI();
+    updateHomeNpvUI();
+    updateMaintModeUI();
+    updateOwnModeUI();
+  </script>
+</body>
+</html>

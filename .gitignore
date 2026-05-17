@@ -1,0 +1,28 @@
+# ---- Secrets / signing (NEVER commit) ----
+android/keystore.properties
+*.jks
+*.keystore
+*.p12
+*.pw
+release-signing/
+
+# ---- Release binary (attached to GitHub release, not committed) ----
+*.apk
+
+# ---- Node ----
+node_modules/
+
+# ---- Capacitor / Android build outputs ----
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+.gradle/
+build/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+*~
+*.swp
