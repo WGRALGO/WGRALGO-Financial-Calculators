@@ -2,7 +2,7 @@
 
 If you find a security issue, please report it privately to:
 
-wealthgapresolutionalgorithm@gmail.com
+info@thewealthgapresolutionalgorithm.org
 
 Do not open a public GitHub issue for sensitive security reports.
 
