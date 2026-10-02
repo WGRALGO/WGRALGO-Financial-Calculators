@@ -1,13 +1,19 @@
 {
-  "appId": "com.wgra.calculators",
-  "appName": "WGRALGO Financial Calculators",
+  "appId": "org.wgralgo.financialcalculators",
+  "appName": "Financial Calculators",
   "webDir": "www",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 1500,
+      "launchShowDuration": 600,
       "backgroundColor": "#000000",
       "androidSplashResourceName": "splash",
+      "androidScaleType": "FIT_CENTER",
       "showSpinner": false
     }
+  },
+  "android": {
+    "webContentsDebuggingEnabled": false,
+    "allowMixedContent": false,
+    "backgroundColor": "#000000"
   }
 }

@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WGRALGO Financial Calculators</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none';">
+  <title>Financial Calculators</title>
   <meta name="description" content="Debt repayment, refinance, loan, amortization, ROI, budget, compound interest, lease vs own car, and rent vs own home calculators. Offline. No ads, accounts, or tracking." />
 
   <style>
@@ -381,20 +382,100 @@
       .wgra-hero-title{font-size:26px;letter-spacing:.12em}
       .wgra-inner{padding:28px 14px 0}
     }
+
+    /* ================= ANDROID APP SHELL ================= */
+    :root{ --bar-h:56px; --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px); }
+    html,body{ min-height:100%; overscroll-behavior:none; -webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:100%; }
+    html{ scroll-padding-top:calc(var(--bar-h) + var(--safe-top) + 12px); }
+    body{ padding-top:calc(var(--bar-h) + var(--safe-top)); }
+    .wgra-toc{ top:calc(var(--bar-h) + var(--safe-top) + 14px) !important; }
+    .wgra-back-to-top{ bottom:calc(24px + var(--safe-bottom)) !important; }
+
+    .app-bar{
+      position:fixed; top:0; left:0; right:0; z-index:30;
+      padding-top:var(--safe-top); background:#000;
+      border-bottom:1px solid rgba(212,175,55,.25);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    .app-bar-row{ height:var(--bar-h); max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:10px; padding:0 6px 0 12px; }
+    .app-bar-logo{ width:36px; height:36px; border-radius:8px; }
+    .app-bar-title{ flex:1; min-width:0; font-size:19px; font-weight:800; color:#fbe79a; letter-spacing:.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .icon-btn{ width:44px; height:44px; border:0; border-radius:50%; background:transparent; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+    .icon-btn:active{ background:rgba(255,255,255,.1); }
+    .icon-btn svg{ width:24px; height:24px; fill:#fdfaf0; }
+
+    /* Big logo at the top of the page */
+    .app-hero{ text-align:center; margin:0 0 18px; }
+    .app-hero img{ width:min(56vw,220px,30vh); height:min(56vw,220px,30vh); }
+    .app-hero p{ margin:8px auto 0; max-width:560px; font-size:15px; line-height:1.5; color:#f5e4b3;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+    /* Landscape phones: smaller logo so the calculators start on screen */
+    @media (orientation:landscape) and (max-height:560px){
+      .app-hero img{ width:min(24vh,120px); height:min(24vh,120px); }
+      .app-hero{ margin-bottom:10px; }
+    }
+
+    /* Bottom sheets: menu, about, privacy, credits */
+    .scrim{ position:fixed; inset:0; z-index:40; background:rgba(0,0,0,.6); opacity:0; pointer-events:none; transition:opacity .25s; }
+    .scrim.open{ opacity:1; pointer-events:auto; }
+    .sheet{
+      position:fixed; left:0; right:0; bottom:0; z-index:50;
+      max-width:820px; margin:0 auto; max-height:85vh; overflow-y:auto;
+      background:#1a1a1a; border-radius:24px 24px 0 0; border-top:1px solid rgba(212,175,55,.4);
+      padding:10px 20px calc(24px + var(--safe-bottom));
+      transform:translateY(105%); transition:transform .3s cubic-bezier(.2,.8,.2,1);
+      color:#fdfaf0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    .sheet.open{ transform:none; }
+    .sheet-handle{ width:36px; height:4px; border-radius:2px; background:#555; margin:0 auto 14px; }
+    .sheet h3{ margin:0 0 10px; font-size:21px; color:#fbe79a; }
+    .sheet p,.sheet li{ font-size:15px; line-height:1.6; color:#e8e4d6; }
+    .sheet ul{ padding-left:20px; margin:0 0 10px; }
+    .sheet .muted{ color:rgba(253,250,240,.6); font-size:14px; }
+    .sheet-close{ display:block; width:100%; margin-top:14px; min-height:50px; border:0; border-radius:14px;
+      background:#2a2a2a; color:#fbe79a; font:inherit; font-size:16px; font-weight:800; cursor:pointer; }
+    .menu-label{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:rgba(245,228,179,.7); margin:6px 6px 4px; }
+    .menu-item{ display:flex; align-items:center; gap:16px; width:100%; padding:13px 6px; border:0; background:transparent; color:#fdfaf0;
+      font:inherit; font-size:16px; text-align:left; cursor:pointer; border-radius:12px; text-decoration:none; box-sizing:border-box; }
+    .menu-item:active{ background:rgba(255,255,255,.06); }
+    .menu-item svg{ width:22px; height:22px; fill:#d4af37; flex:none; }
+    .menu-grid{ display:grid; grid-template-columns:1fr; }
+    @media (min-width:600px){ .menu-grid{ grid-template-columns:1fr 1fr; column-gap:8px; } }
+    .menu-sep{ height:1px; background:rgba(255,255,255,.08); margin:8px 0; }
+
+    /* Intro splash: the big logo while the app opens */
+    .app-splash{ position:fixed; inset:0; z-index:100; background:#000; display:flex; align-items:center; justify-content:center; transition:opacity .45s ease; }
+    .app-splash img{ width:min(80vw,80vh,520px); height:min(80vw,80vh,520px); animation:app-splash-in .6s ease both; }
+    .app-splash.out{ opacity:0; pointer-events:none; }
+    @keyframes app-splash-in{ from{opacity:0;transform:scale(.92)} to{opacity:1;transform:none} }
+    @media (prefers-reduced-motion:reduce){ .app-splash,.app-splash img,.sheet,.scrim{ animation:none; transition:none; } }
+    @media (max-width:380px){ .app-bar-title{ font-size:16.5px; letter-spacing:0; } .app-bar-row{ gap:8px; } }
+
+    /* Wide tables scroll inside their box instead of widening the page */
+    #amTableWrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; }
+    .wgra-cat-layout > *{ min-width:0; }
+    .wgra-cat-main{ min-width:0; flex:1 1 auto; }
+    .wgra-toc{ box-sizing:border-box; }
+    @media (max-width:960px){ .wgra-cat-layout{ align-items:stretch; } }
   </style>
 </head>
 
 <body id="top">
-  <!-- App purpose banner -->
-  <div class="wgra-purpose">
-    <p class="wgra-purpose-title">Free financial tools for everyday decisions.</p>
-    <p class="wgra-purpose-sub">No ads. No account. No tracking. No subscription.</p>
-  </div>
+  <div id="app-splash" class="app-splash" aria-hidden="true"><img src="logo.jpg" alt=""></div>
+
+  <header class="app-bar">
+    <div class="app-bar-row">
+      <img class="app-bar-logo" src="logo.jpg" alt="">
+      <div class="app-bar-title">Financial Calculators</div>
+      <button type="button" class="icon-btn" data-sheet="sheet-menu" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></button>
+    </div>
+  </header>
 
   <div class="wgra-page">
     <div class="wgra-inner">
-      <div class="wgra-breadcrumb">
-        <span>WGRALGO / Financial Calculators</span>
+      <div class="app-hero">
+        <img src="logo.jpg" alt="Financial Calculators logo">
+        <p>Free financial tools for everyday decisions. No ads, no account, no tracking.</p>
       </div>
 
       <div class="wgra-hero-kicker">Math &amp; Projections</div>
@@ -407,8 +488,10 @@
 
       <div class="wgra-quick-disclaimer">
         <strong>Modeling standard used on this page:</strong>
-        Interest is modeled using <strong>daily compounding</strong> with a <strong>360-day year</strong> and <strong>fixed 30-day months</strong>.
-        Monthly payments are assumed to occur at the end of each 30-day period. Results are estimates and may not match your lender’s exact rules
+        Loans, mortgages, refinancing, and car loans use the standard <strong>monthly rate (APR ÷ 12)</strong> that most U.S. lenders use.
+        The Debt Repayment calculator uses <strong>daily interest</strong> (like most credit cards). Annual returns, growth rates, and discount
+        rates are treated as <strong>true yearly rates</strong>, converted to monthly steps.
+        Monthly payments are assumed to occur at the end of each month. Results are estimates and may not match your lender’s exact rules
         (fees, escrow, payment timing, statement cycle length, rounding, local tax rules, etc.). This is education, not advice.
       </div>
 
@@ -437,6 +520,7 @@
             <h2 class="wgra-section-title">Debt Repayment Calculator</h2>
             <p class="wgra-section-text">
               Estimate payoff time (in months), total interest, and an approximate payoff month/year if you provide a start date.
+              Interest is figured daily, the way most credit cards charge it.
             </p>
 
             <div class="wgra-card">
@@ -771,7 +855,7 @@
             <div class="wgra-section-kicker">Compounding</div>
             <h2 class="wgra-section-title">Compound Interest Calculator</h2>
             <p class="wgra-section-text">
-              Uses daily compounding (360-day year) with fixed 30-day months. Contributions apply monthly.
+              Your annual return is treated as a true yearly rate (for example, 7% means 7% growth per year), applied in monthly steps. Contributions apply monthly.
             </p>
 
             <div class="wgra-card">
@@ -781,7 +865,7 @@
                   <input class="wgra-input" id="ciPrincipal" type="number" step="0.01" min="0" value="5000" />
                 </div>
                 <div class="wgra-field">
-                  <label class="wgra-label" for="ciApr">Annual return (APR %)</label>
+                  <label class="wgra-label" for="ciApr">Annual return (%/year)</label>
                   <input class="wgra-input" id="ciApr" type="number" step="0.01" min="0" value="7" />
                 </div>
                 <div class="wgra-field">
@@ -1210,7 +1294,8 @@
               legal, tax, or investment advice, and they do not replace disclosures or official lender calculations.
             </p>
             <p>
-              <strong>Interest modeling standard:</strong> daily compounding, 360-day year, fixed 30-day months; payments assumed at period end.
+              <strong>Interest modeling standard:</strong> loans and mortgages use APR ÷ 12 per month; debt repayment uses daily interest;
+              annual returns and growth rates are true yearly rates applied monthly; payments assumed at the end of each month.
               Real products can differ (fees, day-count rules, escrow, statement cycles, taxes, rounding, etc.).
             </p>
             <p>Always verify results using official statements and qualified professionals.</p>
@@ -1220,18 +1305,70 @@
     </div>
   </div>
 
-  <!-- App About / Footer -->
-  <footer class="wgra-appfooter">
-    <h2>About</h2>
-    <p><span class="wgra-ver">WGRALGO Financial Calculators v1.0.0</span><br>
-       Created by WGRALGO / The Wealth Gap Resolution Algorithm™ Inc.<br>
-       Free and open-source under GPLv3.</p>
-    <p>These calculators are educational tools only. They are not financial, legal, tax,
-       investment, lending, or professional advice. Always verify important financial
-       decisions with qualified professionals or official sources.</p>
-    <p>Offline-first. No ads, no account, no analytics, no trackers, no subscription.
-       Your inputs stay on your device.</p>
-  </footer>
+  <div id="scrim" class="scrim"></div>
+
+  <div id="sheet-menu" class="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="sheet-handle"></div>
+    <div class="menu-label">Calculators</div>
+    <div class="menu-grid">
+    <a class="menu-item" href="#debt-repayment" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Debt Repayment</a>
+    <a class="menu-item" href="#mortgage-refi" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Mortgage Refinance</a>
+    <a class="menu-item" href="#simple-loan" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Simple Loan</a>
+    <a class="menu-item" href="#amortization" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Amortization Schedule</a>
+    <a class="menu-item" href="#roi" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>ROI</a>
+    <a class="menu-item" href="#budget" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Budget</a>
+    <a class="menu-item" href="#compound" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Compound Interest</a>
+    <a class="menu-item" href="#lease-vs-own-car" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Lease vs Own Car</a>
+    <a class="menu-item" href="#rent-vs-own-home" data-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v4h10V4H7zm0 6v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v6h2v-6h-2zm-8 4v2h2v-2H7zm4 0v2h2v-2h-2z"/></svg>Rent vs Own Home</a>
+    </div>
+    <div class="menu-sep"></div>
+    <button type="button" class="menu-item" data-sheet="sheet-about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>About</button>
+    <button type="button" class="menu-item" data-sheet="sheet-privacy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>Privacy</button>
+    <button type="button" class="menu-item" data-sheet="sheet-credits"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Credits</button>
+  </div>
+
+  <div id="sheet-about" class="sheet" role="dialog" aria-modal="true" aria-label="About">
+    <div class="sheet-handle"></div>
+    <h3>About</h3>
+    <p>Financial Calculators is a free set of nine money calculators from WGRALGO / The Wealth Gap Resolution Algorithm™ Inc.:
+       debt repayment, mortgage refinance, simple loan, amortization schedule, ROI, budget, compound interest,
+       lease vs own a car, and rent vs own a home.</p>
+    <h3>How the math works</h3>
+    <ul>
+      <li>Loans, mortgages, refinancing, and car loans use the standard monthly rate (APR ÷ 12) most U.S. lenders use.</li>
+      <li>Debt repayment uses daily interest, like most credit cards.</li>
+      <li>Annual returns, growth rates, and discount rates are true yearly rates, applied in monthly steps.</li>
+    </ul>
+    <p class="muted">For education only, not financial, legal, tax, or investment advice. Results are estimates and may not match your lender’s exact numbers.</p>
+    <p class="muted">Financial Calculators v2.0.0</p>
+    <button type="button" class="sheet-close" data-close>Close</button>
+  </div>
+
+  <div id="sheet-privacy" class="sheet" role="dialog" aria-modal="true" aria-label="Privacy">
+    <div class="sheet-handle"></div>
+    <h3>Privacy</h3>
+    <p>This app works offline and doesn’t save anything on your device. Your numbers never leave your phone. It does not collect personal data.</p>
+    <ul>
+      <li>No ads</li>
+      <li>No account</li>
+      <li>No analytics, cookies, or trackers</li>
+      <li>No internet permission</li>
+    </ul>
+    <button type="button" class="sheet-close" data-close>Close</button>
+  </div>
+
+  <div id="sheet-credits" class="sheet" role="dialog" aria-modal="true" aria-label="Credits">
+    <div class="sheet-handle"></div>
+    <h3>Credits</h3>
+    <ul>
+      <li><strong>WGRALGO</strong> — Project owner, concept, direction, testing, and publishing.</li>
+      <li><strong>ChatGPT</strong> — Original web calculator assistance.</li>
+      <li><strong>Claude Code</strong> — Android app build, calculator fixes, packaging, and GitHub project setup.</li>
+    </ul>
+    <p class="muted">Free and open source under the GNU General Public License v3.0. Made by WGRALGO / The Wealth Gap Resolution Algorithm™ Inc.</p>
+    <button type="button" class="sheet-close" data-close>Close</button>
+  </div>
+
 
   <!-- FLOATING BACK TO TOP BUTTON -->
   <a href="#top" class="wgra-back-to-top" id="backToTopLink" aria-label="Back to Top">
@@ -1278,29 +1415,37 @@
       return dateObj.toLocaleString(undefined, { month:"short", year:"numeric" });
     }
 
-    // ---------------- Interest standard: daily compounding, 360 day-count, fixed 30-day months ----------------
+    // ---------------- Interest standards ----------------
+    // Installment loans (mortgage, refi, simple loan, amortization, car loan): APR / 12 per month (U.S. lender standard).
+    function monthlyRateLoan(aprPct){ return (aprPct/100) / 12; }
+    // Credit-card style debt: daily interest (APR / 360 per day) over a 30-day month.
     function dailyRate360(aprPct){ return (aprPct/100) / 360; }
     function monthlyRateFromDaily360(aprPct){
       const rd = dailyRate360(aprPct);
       return Math.pow(1 + rd, 30) - 1; // fixed 30-day "month"
     }
+    // Returns, growth, and discount rates: true (effective) annual rate converted to a monthly rate.
+    function annualToMonthlyGrowth(annualPct){
+      const a = annualPct / 100;
+      return (a <= -1) ? -1 : (Math.pow(1 + a, 1/12) - 1);
+    }
     function paymentMonthly(principal, aprPct, nMonths){
       const P = principal;
-      const r = monthlyRateFromDaily360(aprPct);
+      const r = monthlyRateLoan(aprPct);
       const n = nMonths;
       if (n <= 0) return NaN;
       if (Math.abs(r) < 1e-12) return P / n;
       return P * r / (1 - Math.pow(1 + r, -n));
     }
     function pvFactor(discountAprPct, tMonths){
-      // Discount monthly rate using the SAME standard (daily/360 -> 30-day months)
-      const d = monthlyRateFromDaily360(discountAprPct);
+      // Discount rate is a true annual rate converted to monthly
+      const d = annualToMonthlyGrowth(discountAprPct);
       return 1 / Math.pow(1 + d, tMonths);
     }
 
     function amortize({principal, aprPct, termMonths, extra=0, startDate=null, capMonths=8000}){
       let balance = principal;
-      const rMonth = monthlyRateFromDaily360(aprPct);
+      const rMonth = monthlyRateLoan(aprPct);
       const basePay = paymentMonthly(principal, aprPct, termMonths);
       if (!Number.isFinite(basePay) || basePay <= 0) return { error:"Invalid payment inputs." };
 
@@ -1342,7 +1487,7 @@
       }
 
       const months = schedule.length;
-      const payoffDate = start ? addMonths(start, months) : null;
+      const payoffDate = (start && months > 0) ? addMonths(start, months - 1) : null;
 
       return { basePayment: basePay, schedule, months, totalInterest, totalPaid, payoffDate };
     }
@@ -1381,7 +1526,7 @@
         months++;
       }
 
-      const payoffDate = startDate ? addMonths(new Date(startDate), months) : null;
+      const payoffDate = (startDate && months > 0) ? addMonths(new Date(startDate), months - 1) : null;
       return { months, totalInterest, totalPaid, payoffDate, remaining: Math.max(0, bal) };
     }
 
@@ -1440,7 +1585,7 @@
 
       $("debtKV").innerHTML = `
         <div class="k">Starting balance</div><div class="v">${fmtMoney(balance)}</div>
-        <div class="k">APR (daily/360)</div><div class="v">${fmtPct(apr)}</div>
+        <div class="k">APR (daily interest)</div><div class="v">${fmtPct(apr)}</div>
         <div class="k">Monthly payment</div><div class="v">${fmtMoney(payment)}</div>
         <div class="k">Extra monthly payment</div><div class="v">${fmtMoney(Math.max(0, extra))}</div>
         <div class="k">Estimated payoff time</div><div class="v">${fmtInt(res.months)} month(s)</div>
@@ -1695,7 +1840,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "amortization_schedule_30day_daily360.csv";
+      a.download = "amortization_schedule.csv";
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -1834,7 +1979,7 @@
         return;
       }
 
-      const rMonth = monthlyRateFromDaily360(apr);
+      const rMonth = annualToMonthlyGrowth(apr);
       let bal = principal;
       let totalContrib = 0;
 
@@ -1857,7 +2002,7 @@
         <div class="k">Starting amount</div><div class="v">${fmtMoney(principal)}</div>
         <div class="k">Monthly contribution</div><div class="v">${fmtMoney(monthly)}</div>
         <div class="k">Time</div><div class="v">${fmtInt(months)} month(s)</div>
-        <div class="k">Modeled annual return</div><div class="v">${fmtPct(apr)} (daily/360)</div>
+        <div class="k">Modeled annual return</div><div class="v">${fmtPct(apr)} per year</div>
         <div class="k">Total contributions</div><div class="v">${fmtMoney(totalContrib)}</div>
         <div class="k">Growth (estimate)</div><div class="v">${fmtMoney(growth)}</div>
         <div class="k">Ending value</div><div class="v">${fmtMoney(bal)}</div>
@@ -1961,9 +2106,11 @@
       const firstAtSigning = $("leaseFirstPaymentAtSigning").checked;
       const leaseTaxMode = $("carTaxMode").value; // monthly or upfront
 
-      // Lease monthly with tax
+      // Lease monthly with tax (if tax is paid upfront, monthly payments are charged before tax)
       const leaseMonthlyWithTax = leaseMonthlyBeforeTax * (1 + taxRate);
-      const leaseFirstPayment = firstAtSigning ? leaseMonthlyWithTax : 0;
+      const leasePay = (leaseTaxMode === "upfront") ? leaseMonthlyBeforeTax : leaseMonthlyWithTax;
+      // If the first payment is due at signing, it IS payment #1 of the term (not an extra payment)
+      const leaseFirstPayment = firstAtSigning ? leasePay : 0;
 
       // How many full lease cycles within horizon? (repeat lease = YES)
       const cycles = Math.ceil(horizon / leaseTerm);
@@ -1990,13 +2137,15 @@
         if (useNpv) leaseNpv += upfront * pvFactor(disc, cycleStartMonth);
 
         // monthly payments within this cycle, but not past horizon
+        // - first payment at signing: remaining payments are due at the start of months 2..term
+        // - otherwise: payments are due at the end of months 1..term
         const monthsThisCycle = Math.min(leaseTerm, horizon - cycleStartMonth);
         for (let m=1; m<=monthsThisCycle; m++){
-          const t = cycleStartMonth + (m-1);
-          const pay = (leaseTaxMode === "upfront") ? leaseMonthlyBeforeTax : leaseMonthlyWithTax;
+          const t = cycleStartMonth + m;
+          const pay = (firstAtSigning && m === monthsThisCycle) ? 0 : leasePay;
           const flow = pay + leaseOps;
           leaseOutTotal += flow;
-          if (useNpv) leaseNpv += flow * pvFactor(disc, t+1);
+          if (useNpv) leaseNpv += flow * pvFactor(disc, t);
         }
 
         // end fee if cycle completes within horizon
@@ -2059,7 +2208,7 @@
 
       if (principal > 0){
         ownMonthlyPay = paymentMonthly(principal, loanApr, loanTerm);
-        const rMonth = monthlyRateFromDaily360(loanApr);
+        const rMonth = monthlyRateLoan(loanApr);
 
         for (let m=1; m<=horizon; m++){
           let pay = 0;
@@ -2170,10 +2319,6 @@
     }
 
     // ---------------- Rent vs Own Home ----------------
-    function annualToMonthlyGrowth(annualPct){
-      const a = annualPct / 100;
-      return (a <= -1) ? -1 : (Math.pow(1 + a, 1/12) - 1);
-    }
 
     function homeCalc(){
       const warn = $("homeWarn");
@@ -2229,13 +2374,13 @@
 
       const mortPay = (loan > 0) ? paymentMonthly(loan, apr, termMonths) : 0;
 
-      const rMonthMort = monthlyRateFromDaily360(apr);
+      const rMonthMort = monthlyRateLoan(apr);
 
       const appMonthly = annualToMonthlyGrowth(appPct);
       const rentMonthlyInc = annualToMonthlyGrowth(rentIncPct);
 
-      // Investment growth for renter uses daily/360 standard
-      const invMonth = monthlyRateFromDaily360(invReturn);
+      // Investment growth for renter: true annual rate converted to monthly
+      const invMonth = annualToMonthlyGrowth(invReturn);
 
       let homeValue = price;
       let balance = loan;
@@ -2328,8 +2473,12 @@
 
       let npvBlock = "";
       if (useNpv){
+        // NPV net cost = PV of cash paid out − PV of value recovered at the end.
+        // Owner recovers home equity after selling costs; renter recovers the deposit (already in npvRent).
+        // The renter's invested account is NOT subtracted here: the discount rate already
+        // represents the return the renter could earn on money not spent.
         const npvOwnNet = npvOwn - (netOwner * pvFactor(disc, horizon));
-        const npvRentNet = npvRent - (netRenter * pvFactor(disc, horizon));
+        const npvRentNet = npvRent;
 
         const npvWinner = (npvOwnNet < npvRentNet) ? "Own" : (npvRentNet < npvOwnNet ? "Rent" : "Tie");
         const npvDiff = Math.abs(npvOwnNet - npvRentNet);
@@ -2496,6 +2645,46 @@
     updateHomeNpvUI();
     updateMaintModeUI();
     updateOwnModeUI();
+  </script>
+  <script>
+  (function () {
+    var splash = document.getElementById("app-splash");
+    setTimeout(function () {
+      splash.classList.add("out");
+      setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 500);
+    }, 1300);
+
+    var scrim = document.getElementById("scrim");
+    function openSheetEl() { return document.querySelector(".sheet.open"); }
+    function closeSheets() {
+      Array.prototype.forEach.call(document.querySelectorAll(".sheet.open"), function (s) { s.classList.remove("open"); });
+      scrim.classList.remove("open");
+    }
+    function openSheet(id) {
+      closeSheets();
+      var s = document.getElementById(id);
+      if (!s) return;
+      s.classList.add("open");
+      scrim.classList.add("open");
+    }
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest ? e.target.closest("[data-sheet],[data-close]") : null;
+      if (t && t.hasAttribute("data-sheet")) { e.preventDefault(); openSheet(t.getAttribute("data-sheet")); return; }
+      if (t && t.hasAttribute("data-close")) { closeSheets(); return; }
+      if (e.target === scrim) closeSheets();
+    });
+
+    // Android back button (called by MainActivity). Returns true when handled;
+    // false lets the app ask before exiting.
+    window.onAndroidBack = function () {
+      if (openSheetEl()) { closeSheets(); return true; }
+      if (document.activeElement && document.activeElement.blur && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) {
+        document.activeElement.blur(); return true;
+      }
+      if (window.scrollY > 200) { window.scrollTo({ top: 0, behavior: "smooth" }); return true; }
+      return false;
+    };
+  })();
   </script>
 </body>
 </html>

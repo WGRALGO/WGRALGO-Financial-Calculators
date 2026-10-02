@@ -1,21 +1,30 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ProGuard rules for WGRALGO Financial Calculators
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep Capacitor + plugin bridge classes
+-keep class com.getcapacitor.** { *; }
+-keep class com.getcapacitor.annotation.** { *; }
+-keepattributes *Annotation*
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }
+-keepclassmembers class * {
+    @com.getcapacitor.PluginMethod *;
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep classes referenced via reflection in JavaScript bridges
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# AndroidX / WebView safety
+-dontwarn org.bouncycastle.**
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.**
+
+# Cordova plugins
+-keep class org.apache.cordova.** { *; }
+
+# Keep our app classes
+-keep class org.wgralgo.financialcalculators.** { *; }
+
+# Preserve source/line info for crash reports
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

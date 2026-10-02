@@ -26,3 +26,8 @@ build/
 Thumbs.db
 *~
 *.swp
+
+# Signing secrets (never commit)
+keystore.properties
+*.base64
+*-SECRETS.txt
