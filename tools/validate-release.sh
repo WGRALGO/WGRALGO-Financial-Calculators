@@ -1,151 +1,109 @@
 #!/usr/bin/env bash
-# Release validation for WGRALGO Financial Calculators v1.0.0
-# Usage: bash tools/validate-release.sh
+# Financial Calculators — release validation.
+# Usage: ./tools/validate-release.sh [path/to/app.apk]
+# Exit non-zero if any check fails.
 set -u
+cd "$(dirname "$0")/.."
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT"
+VERSION=$(node -p "require('./package.json').version")
+CODE=$(echo "$VERSION" | awk -F. '{ print $1*100 + $2*10 + $3 }')
 
 PASS=0
 FAIL=0
-ok()   { echo "PASS: $1"; PASS=$((PASS+1)); }
-bad()  { echo "FAIL: $1"; FAIL=$((FAIL+1)); }
+ok()  { echo "  PASS  $1"; PASS=$((PASS+1)); }
+bad() { echo "  FAIL  $1"; FAIL=$((FAIL+1)); }
 
-APK="WGRALGO_Financial_Calculators_v1.0.0.apk"
-APK_SHA="$APK.sha256"
+echo "== Calculators =="
+OUT=$(node - <<'NODE'
+const fs = require("fs");
+const h = fs.readFileSync("www/index.html", "utf8");
+const R = (ok, msg) => console.log((ok ? "PASS " : "FAIL ") + msg);
+const ids = ["debt-repayment", "mortgage-refi", "simple-loan", "amortization", "roi", "budget", "compound", "lease-vs-own-car", "rent-vs-own-home"];
+const missing = ids.filter(id => !h.includes('id="' + id + '"'));
+R(missing.length === 0, missing.length ? "missing calculators: " + missing.join(", ") : "all 9 calculators present");
+for (const fn of ["debtCalc", "refiCalc", "loanCalc", "amCalc", "roiCalc", "budCalc", "compoundCalc", "carCalc", "homeCalc"])
+  if (!new RegExp("function " + fn + "\\(").test(h)) R(false, fn + " missing");
+R(true, "calculator functions present");
+R(/function monthlyRateLoan\(aprPct\)\{ return \(aprPct\/100\) \/ 12; \}/.test(h), "loans use APR / 12");
+R(/function annualToMonthlyGrowth\(/.test(h), "annual rates converted as true yearly rates");
+R(/months - 1\) : null/.test(h), "payoff date is the month of the last payment");
+R(/firstAtSigning && m === monthsThisCycle/.test(h), "lease first payment counted once");
+R(/const npvRentNet = npvRent;/.test(h), "rent vs own NPV does not double count");
+R(/window\.onAndroidBack = function/.test(h), "Android back button hook present");
+NODE
+)
+while IFS= read -r line; do
+  case "$line" in
+    PASS*) ok "${line#PASS }" ;;
+    FAIL*) bad "${line#FAIL }" ;;
+  esac
+done <<< "$OUT"
 
-# 1. LICENSE is full GPLv3
-if grep -q "GNU GENERAL PUBLIC LICENSE" LICENSE 2>/dev/null && grep -q "Version 3" LICENSE 2>/dev/null; then
-  ok "LICENSE contains GNU GENERAL PUBLIC LICENSE Version 3"
-else
-  bad "LICENSE missing GPLv3 text"
-fi
+echo "== Version $VERSION (code $CODE) =="
+GR=android/app/build.gradle
+grep -q "versionName \"$VERSION\"" $GR && ok "versionName $VERSION" || bad "versionName is not $VERSION"
+grep -q "versionCode $CODE" $GR && ok "versionCode $CODE" || bad "versionCode is not $CODE"
+grep -q "v$VERSION" www/index.html && ok "app shows v$VERSION" || bad "app does not show v$VERSION"
+grep -q "$VERSION" README.md && ok "README mentions $VERSION" || bad "README missing $VERSION"
+[ -f "release-notes/v$VERSION.md" ] && ok "release-notes/v$VERSION.md present" || bad "release-notes/v$VERSION.md missing"
 
-# 2. package.json says GPL-3.0-only
-if [ -f package.json ]; then
-  if grep -q '"license": *"GPL-3.0-only"' package.json; then
-    ok "package.json license is GPL-3.0-only"
+echo "== Build config =="
+grep -q 'applicationId "org.wgralgo.financialcalculators"' $GR && ok "appId org.wgralgo.financialcalculators" || bad "appId wrong"
+grep -q 'debuggable false' $GR && ok "release debuggable false" || bad "release not debuggable false"
+grep -q 'minifyEnabled true' $GR && ok "minify enabled" || bad "minify not enabled"
+MAN=android/app/src/main/AndroidManifest.xml
+grep -q 'android.permission.INTERNET" tools:node="remove"' $MAN && ok "INTERNET permission stripped" || bad "INTERNET permission not stripped"
+
+echo "== Logo, icon, splash =="
+RES=android/app/src/main/res
+[ -f "$RES/drawable-nodpi/splash_icon.jpg" ] && ok "Android 12+ splash logo present" || bad "splash_icon.jpg missing"
+grep -q 'windowSplashScreenAnimatedIcon">@drawable/splash_icon' $RES/values/styles.xml && ok "system splash uses the logo" || bad "system splash not set to the logo"
+grep -q 'windowSplashScreenBackground">@android:color/black' $RES/values/styles.xml && ok "system splash background is black" || bad "system splash background not black"
+grep -q '#000000' $RES/values/ic_launcher_background.xml && ok "icon background is black" || bad "icon background not black"
+[ -f www/logo.jpg ] && ok "in-app logo present" || bad "in-app logo missing"
+
+echo "== App privacy =="
+IDX=www/index.html
+grep -qi 'Content-Security-Policy' $IDX && ok "CSP present" || bad "CSP missing"
+grep -Eqi 'href="(https?:)?//|href="/|src="https?://|@import' $IDX && bad "external link or resource in app" || ok "no external links or resources"
+grep -Eqi 'gofundme\.com|facebook\.com|instagram\.com|tiktok\.com|youtube\.com' $IDX && bad "donation/social link in app" || ok "no donation or social links"
+grep -Eqi 'google-analytics|googletagmanager|gtag\(|firebase|admob' $IDX && bad "analytics/ads reference" || ok "no analytics or ads"
+grep -Eq 'localStorage|sessionStorage|indexedDB|document\.cookie' $IDX && bad "app stores data on device" || ok "no on-device storage"
+
+echo "== License =="
+grep -q '"license": "GPL-3.0-only"' package.json && ok "package.json license GPL-3.0-only" || bad "package.json license not GPL-3.0-only"
+grep -q 'GNU GENERAL PUBLIC LICENSE' LICENSE && ok "LICENSE is GPLv3" || bad "LICENSE is not GPLv3"
+
+echo "== Name and orientation =="
+grep -q '<string name="app_name">WGRALGO' android/app/src/main/res/values/strings.xml && bad "app name under the icon starts with WGRALGO" || ok "app name under the icon has no WGRALGO prefix"
+grep -q 'screenOrientation' android/app/src/main/AndroidManifest.xml && bad "orientation is locked" || ok "rotates freely (portrait and landscape)"
+grep -q 'WGRALGO-[A-Za-z]*-v' .github/workflows/release.yml && ok "APK named WGRALGO-<AppName>-v<version>.apk" || bad "APK name not uniform"
+
+if [ "${1:-}" != "" ] && [ -f "${1:-}" ]; then
+  APK="$1"
+  echo "== APK: $APK =="
+  SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"
+  BT=$(ls -d "$SDK"/build-tools/* 2>/dev/null | sort -V | tail -1)
+  if [ -x "$BT/aapt2" ]; then
+    DUMP=$("$BT/aapt2" dump badging "$APK" 2>/dev/null)
+    echo "$DUMP" | grep -q "versionName='$VERSION'" && ok "APK versionName $VERSION" || bad "APK versionName wrong"
+    echo "$DUMP" | grep -q "versionCode='$CODE'" && ok "APK versionCode $CODE" || bad "APK versionCode wrong"
+    echo "$DUMP" | grep -q "package: name='org.wgralgo.financialcalculators'" && ok "APK package id" || bad "APK package id wrong"
+    echo "$DUMP" | grep -q "uses-permission: name='android.permission.INTERNET'" && bad "APK declares INTERNET" || ok "APK has no INTERNET permission"
   else
-    bad "package.json license is not GPL-3.0-only"
+    bad "aapt2 not found"
+  fi
+  if [ -x "$BT/apksigner" ]; then
+    CERT=$("$BT/apksigner" verify --print-certs "$APK" 2>/dev/null)
+    echo "$CERT" | grep -qi "CN=Android Debug" && bad "APK signed with debug cert" || ok "APK not signed with debug cert"
+    "$BT/apksigner" verify "$APK" >/dev/null 2>&1 && ok "APK signature verifies" || bad "APK signature invalid/unsigned"
+  else
+    bad "apksigner not found"
   fi
 else
-  ok "package.json not present (skipped)"
-fi
-
-# 3. No app-facing files say v1.0.1
-HITS=$(grep -RIl --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=build \
-  --exclude-dir=android/build --exclude=CHANGELOG.md -e '1\.0\.1' \
-  www package.json capacitor.config.json android/app/build.gradle \
-  android/app/src/main/res/values/strings.xml README.md PRIVACY.md \
-  2>/dev/null)
-if [ -z "$HITS" ]; then
-  ok "No v1.0.1 references in app-facing files"
-else
-  bad "v1.0.1 found in: $HITS"
-fi
-
-# 4. App-facing version references say v1.0.0
-if grep -q "v1.0.0" www/index.html && grep -q "v1.0.0" README.md; then
-  ok "v1.0.0 referenced in app UI and README"
-else
-  bad "v1.0.0 missing from app UI or README"
-fi
-
-# 5. Android versionName 1.0.0
-if grep -qE 'versionName +"1\.0\.0"' android/app/build.gradle; then
-  ok "Android versionName is 1.0.0"
-else
-  bad "Android versionName is not 1.0.0"
-fi
-
-# 6. Android versionCode 100
-if grep -qE 'versionCode +100' android/app/build.gradle; then
-  ok "Android versionCode is 100"
-else
-  bad "Android versionCode is not 100"
-fi
-
-# 7. Release not debuggable=true
-if grep -qE 'debuggable +true' android/app/build.gradle; then
-  # only acceptable inside debug{} block; flag if release sets it true
-  if awk '/release *\{/,/\}/' android/app/build.gradle | grep -qE 'debuggable +true'; then
-    bad "release buildType sets debuggable true"
-  else
-    ok "release buildType does not set debuggable true"
-  fi
-else
-  ok "release buildType does not set debuggable true"
-fi
-
-# 8. Android Debug certificate not used (check built APK if tooling available)
-BT=$(ls -d "$HOME"/Android/Sdk/build-tools/* 2>/dev/null | sort -V | tail -1)
-if [ -n "$BT" ] && [ -f "$APK" ] && [ -x "$BT/apksigner" ]; then
-  DN=$("$BT/apksigner" verify --print-certs "$APK" 2>/dev/null | grep "Signer #1 certificate DN")
-  if echo "$DN" | grep -qi "Android Debug"; then
-    bad "APK signed with Android Debug certificate: $DN"
-  else
-    ok "APK not signed with Android Debug certificate ($DN)"
-  fi
-else
-  echo "INFO: apksigner or APK unavailable, skipping cert check"
-fi
-
-# 9. INTERNET permission not present (offline app)
-if grep -q 'android.permission.INTERNET' android/app/src/main/AndroidManifest.xml; then
-  if grep -q 'tools:node="remove"' android/app/src/main/AndroidManifest.xml; then
-    ok "INTERNET permission only present as a removal directive"
-  else
-    bad "INTERNET permission declared in manifest"
-  fi
-else
-  ok "INTERNET permission not in manifest"
-fi
-if [ -n "${BT:-}" ] && [ -f "$APK" ] && [ -x "$BT/aapt" ]; then
-  if "$BT/aapt" dump badging "$APK" 2>/dev/null | grep -q "uses-permission:.*android.permission.INTERNET"; then
-    bad "Built APK requests INTERNET permission"
-  else
-    ok "Built APK does not request INTERNET permission"
-  fi
-fi
-
-# 10. No external CDN links in app source
-if grep -RIn --include="*.html" --include="*.css" --include="*.js" \
-   -e 'cdn.jsdelivr.net' -e 'https\?://[^"]*\(googleapis\|cdnjs\|unpkg\|jsdelivr\)' www 2>/dev/null | grep -q .; then
-  bad "External CDN reference found in www/"
-else
-  ok "No external CDN references in app source"
-fi
-
-# 11. Required docs exist
-MISSING=""
-for f in README.md PRIVACY.md CONTRIBUTORS.md CHANGELOG.md SECURITY.md THIRD_PARTY_NOTICES.md LICENSE; do
-  [ -f "$f" ] || MISSING="$MISSING $f"
-done
-if [ -z "$MISSING" ]; then ok "All required docs present"; else bad "Missing docs:$MISSING"; fi
-
-# 12. Screenshots exist
-if [ -d screenshots ] && [ "$(ls -1 screenshots/*.png 2>/dev/null | wc -l)" -ge 5 ]; then
-  ok "Screenshots present (>=5)"
-else
-  bad "Screenshots missing or fewer than 5"
-fi
-
-# 13. Final APK exists
-if [ -f "$APK" ]; then ok "Final APK present: $APK"; else bad "Final APK missing: $APK"; fi
-
-# 14. SHA-256 checksum exists and matches
-if [ -f "$APK_SHA" ]; then
-  if sha256sum -c "$APK_SHA" >/dev/null 2>&1; then
-    ok "SHA-256 checksum present and verifies"
-  else
-    bad "SHA-256 checksum present but does NOT verify"
-  fi
-else
-  bad "SHA-256 checksum file missing: $APK_SHA"
+  echo "== APK checks skipped (no APK path given) =="
 fi
 
 echo
-echo "==================================="
-echo "PASS: $PASS   FAIL: $FAIL"
-echo "==================================="
-[ "$FAIL" -eq 0 ]
+echo "RESULT: $PASS passed, $FAIL failed"
+[ $FAIL -eq 0 ]

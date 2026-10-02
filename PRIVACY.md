@@ -1,10 +1,10 @@
 # Privacy
 
-WGRALGO Financial Calculators does not collect personal information.
+Financial Calculators does not collect personal information.
 
 The app does not require an account, does not use analytics, does not contain ads, does not include trackers, does not upload calculator inputs, and does not use a backend server.
 
-All calculator inputs stay on the user's device.
+All calculator inputs stay on the user's device, and nothing is saved after the app is closed. A content security policy inside the app blocks all network access.
 
 The APK does not require Android INTERNET permission.
 
